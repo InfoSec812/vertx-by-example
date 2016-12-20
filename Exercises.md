@@ -302,21 +302,14 @@ class EventVerticle extends GroovyVerticle {
             msg.reply(msg.body())
         } else {
             msg.fail(1, 'Random Failure')
-	}
+        }
     }
 }
 ```
 
 [Exercise6.groovy](Exercise6/Exercise6.groovy)
 ```groovy
-import io.vertx.lang.groovy.GroovyVerticle
-import io.vertx.groovy.ext.web.Router
-import io.vertx.groovy.ext.web.RoutingContext
-import io.vertx.core.json.JsonObject
-import io.vertx.core.AsyncResult
-import io.vertx.groovy.core.eventbus.Message
-
-import static groovy.json.JsonOutput.toJson
+// .. SNIP ..
 
 class Exercise6 extends GroovyVerticle {
 
@@ -331,34 +324,18 @@ class Exercise6 extends GroovyVerticle {
         vertx.deployVerticle('groovy:EventVerticle.groovy')
     }
 
-    void rootHandler(RoutingContext ctx) {
-        def msg = new JsonObject([path: ctx.request().path()])
-        def replyHandler = { AsyncResult<Message> reply -> this.replyHandler(ctx, reply) }
-        vertx.eventBus().send('event.verticle', msg, replyHandler)
-    }
-
-    void replyHandler(RoutingContext ctx, AsyncResult<Message> reply) {
-        def response = ctx.response()
-                          .putHeader('Content-Type', 'application/json')
-        if (reply.succeeded()) {
-            response.setStatusCode(200)
-               .setStatusMessage('OK')
-               .end(new JsonObject(reply.result().body()).encodePrettily())
-        } else {
-            response.setStatusCode(500)
-               .setStatusMessage('Server Error')
-               .end(toJson(reply.cause()))
-        }
-    }    
+    // .. SNIP ..
 }
 ```
 
 
-(**NOTE:** When using `**vertx run <VerticleName>**` to launch Vert.x applications, the files should be in the current working directory or a child directory referenced by it's relative path)
+(**NOTE:** When using `**vertx run <VerticleName>**` to launch Vert.x applications, the files should be in the current 
+working directory or a child directory referenced by it's relative path)
 
 Several new concepts have been introduced in this example:
 
-* The [EventBus](http://vertx.io/docs/vertx-core/groovy/#event_bus) - Used to communicate between Verticles in a thread-safe manner
+* The [EventBus](http://vertx.io/docs/vertx-core/groovy/#event_bus) - Used to communicate between Verticles in a 
+thread-safe manner
 
 * Deploying Verticles Programmatically
 
@@ -374,93 +351,93 @@ the deployment is complete.
 
 [Example7.groovy](Example7/Example7.groovy)
 ```groovy
-import io.vertx.core.AsyncResult
-import io.vertx.core.json.JsonObject
-import io.vertx.core.logging.LoggerFactory
-import io.vertx.groovy.core.eventbus.Message
-import io.vertx.groovy.ext.web.Router
-import io.vertx.groovy.ext.web.RoutingContext
-import io.vertx.lang.groovy.GroovyVerticle
-
-import static groovy.json.JsonOutput.toJson
-
+// .. SNIP ..
 class Exercise7 extends GroovyVerticle {
 
     void start() {
-        vertx.deployVerticle('groovy:EventVerticle.groovy', { AsyncResult res ->
-            if (res.succeeded()) {
-                LoggerFactory.getLogger(Exercise7).info('Successfully deployed EventVerticle')
-
-                // If the EventVerticle successfully deployed, configure and start the HTTP server
-                def router = Router.router(vertx)
-
-                router.get().handler(this.&rootHandler)
-
-                vertx.createHttpServer()            // Create a new HttpServer
-                    .requestHandler(router.&accept) // Register a request handler
-                    .listen(8080, '127.0.0.1')      // Listen on 127.0.0.1:8080
-            } else {
-                // Otherwise, exit the application
-                LoggerFactory.getLogger(Exercise7).error('Failed to deploy EventVerticle', res.cause())
-                vertx.close()
-            }
-        })
+        vertx.deployVerticle('groovy:EventVerticle.groovy', this.&deployHandler)
     }
 
-    void rootHandler(RoutingContext ctx) {
-        def msg = new JsonObject([path: ctx.request().path()])
-        def replyHandler = { AsyncResult<Message> reply -> this.replyHandler(ctx, reply) }
-        vertx.eventBus().send('event.verticle', msg, replyHandler)
-    }
+	// .. SNIP ..
 
-    void replyHandler(RoutingContext ctx, AsyncResult<Message> reply) {
-        def response = ctx.response()
-                          .putHeader('Content-Type', 'application/json')
-        if (reply.succeeded()) {
-            response.setStatusCode(200)
-               .setStatusMessage('OK')
-               .end(new JsonObject(reply.result().body()).encodePrettily())
+    void deployHandler(AsyncResult<String> res) {
+        if (res.succeeded()) {
+            LoggerFactory.getLogger(Exercise7).info('Successfully deployed EventVerticle')
+
+            // If the EventVerticle successfully deployed, configure and start the HTTP server
+            def router = Router.router(vertx)
+
+            router.get().handler(this.&rootHandler)
+
+            vertx.createHttpServer()            // Create a new HttpServer
+                .requestHandler(router.&accept) // Register a request handler
+                .listen(8080, '127.0.0.1')      // Listen on 127.0.0.1:8080
         } else {
-            response.setStatusCode(500)
-               .setStatusMessage('Server Error')
-               .end(toJson(reply.cause()))
+            // Otherwise, exit the application
+            LoggerFactory.getLogger(Exercise7).error('Failed to deploy EventVerticle', res.cause())
+            vertx.close()
         }
-    }    
+    }
 }
 ```
 
 [EventVerticle.groovy](Exercise7/EventVerticle.groovy)
-```groovy
-import io.vertx.core.Future
-import io.vertx.core.json.JsonObject
-import io.vertx.groovy.core.eventbus.Message
-import io.vertx.lang.groovy.GroovyVerticle
-
-class EventVerticle extends GroovyVerticle {
-
-    @Override
-    void start(Future startFuture) {
-        vertx.eventBus().consumer('event.verticle', this.&doSomething)
-
-        if ((Math.round(Math.random()*1))==1) {            // Randomly succeed or fail deployment of EventVerticle
-            startFuture.complete()
-        } else {
-            startFuture.fail('Random deployment failure')
-        }
-    }
-
-    void doSomething(Message<JsonObject> msg) {
-        if ((Math.round(Math.random()*1))==1) {
-            msg.reply(msg.body())
-        } else {
-            msg.fail(1, 'Random Failure')
-	}
-    }
-}
-```
 
 Next Steps:
 * Modify the example above to attempt to redeploy EventVerticle in case of a failure (Use maximum of 3 retries)
 * Modify the example above to deploy more than one Verticle and call the new Verticle `AnotherVerticle.groovy`
 
 ### Exercise 8: Asynchronous Coordination
+It is useful to coordinate several asynchronous operations in a single handler for certain situations. To 
+facilitate this, Vert.x provides a [CompositeFuture](http://vertx.io/docs/apidocs/io/vertx/core/CompositeFuture.html)
+
+[Exercise8.groovy](Exercise8/Exercise8.groovy)
+```groovy
+// .. SNIP ..
+
+class Exercise8 extends GroovyVerticle {
+
+    void start() {
+
+        Future eventVerticleFuture = Future.future()
+        Future anotherVerticleFuture = Future.future()
+
+        CompositeFuture.join(eventVerticleFuture, anotherVerticleFuture).setHandler(this.&deployHandler)
+
+        vertx.deployVerticle('groovy:EventVerticle.groovy', eventVerticleFuture.completer())
+        vertx.deployVerticle('groovy:AnotherVerticle.groovy', anotherVerticleFuture.completer())
+    }
+
+    // .. SNIP ..
+
+    void deployHandler(CompositeFuture cf) {
+        if (cf.succeeded()) {
+            LoggerFactory.getLogger(Exercise8).info('Successfully deployed all verticles')
+
+            // If the EventVerticle successfully deployed, configure and start the HTTP server
+            def router = Router.router(vertx)
+
+            router.get().handler(this.&rootHandler)
+
+            vertx.createHttpServer()            // Create a new HttpServer
+                .requestHandler(router.&accept) // Register a request handler
+                .listen(8080, '127.0.0.1')      // Listen on 127.0.0.1:8080
+        } else {
+            def range = 0..(cf.size() - 1)
+            range.each { x ->
+                if (cf.failed(x)) {
+                    LoggerFactory.getLogger(Exercise8).error('Failed to deploy verticle', cf.cause(x))
+                }
+            }
+            vertx.close()
+        }
+    }
+}
+
+```
+
+Next Steps: (see [CompositeFuture](http://vertx.io/docs/apidocs/io/vertx/core/CompositeFuture.html) and 
+[Async Coordination](http://vertx.io/docs/vertx-core/groovy/#_sequential_composition))
+* Modify the example above to use a List of futures instead of specifying each future as a parameter.
+* Remove the CompositeFuture and use composed [Future](http://vertx.io/docs/apidocs/io/vertx/core/Future.html)s to 
+  load one verticle after another

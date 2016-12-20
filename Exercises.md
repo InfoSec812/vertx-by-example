@@ -442,8 +442,8 @@ Next Steps: (see [CompositeFuture](http://vertx.io/docs/apidocs/io/vertx/core/Co
   load one verticle after another
 
 ### Exercise 9: Using Shared Data
-While you can coordinate between verticles very well using String and JsonObject instances, it is sometimes better to 
-share certain objects across multiple verticles. Vert.x makes this possible via 2 facilities.
+While you can coordinate between verticles very well using String and JsonObject instances over the EventBus, it is 
+sometimes better to share certain objects across multiple verticles. Vert.x makes this possible via 2 facilities.
 
 #### Exercise 9.1: Shared Local Map
 The [Vertx.sharedData()](http://vertx.io/docs/apidocs/io/vertx/core/Vertx.html#sharedData--) method allows us to get an

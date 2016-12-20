@@ -1,4 +1,6 @@
 import io.vertx.core.AsyncResult
+import io.vertx.core.CompositeFuture
+import io.vertx.core.Future
 import io.vertx.core.json.JsonObject
 import io.vertx.core.logging.LoggerFactory
 import io.vertx.groovy.core.eventbus.Message
@@ -8,12 +10,16 @@ import io.vertx.lang.groovy.GroovyVerticle
 
 import static groovy.json.JsonOutput.toJson
 
-class Exercise7 extends GroovyVerticle {
+class Exercise8 extends GroovyVerticle {
 
     void start() {
-        vertx.deployVerticle('groovy:EventVerticle.groovy', { AsyncResult res ->
-            if (res.succeeded()) {
-                LoggerFactory.getLogger(Exercise7).info('Successfully deployed EventVerticle')
+
+        Future eventVerticleFuture = Future.future()
+        Future anotherVerticleFuture = Future.future()
+
+        CompositeFuture.join(eventVerticleFuture, anotherVerticleFuture).setHandler({ CompositeFuture cf ->
+            if (cf.succeeded()) {
+                LoggerFactory.getLogger(Exercise8).info('Successfully deployed all verticles')
 
                 // If the EventVerticle successfully deployed, configure and start the HTTP server
                 def router = Router.router(vertx)
@@ -24,11 +30,17 @@ class Exercise7 extends GroovyVerticle {
                     .requestHandler(router.&accept) // Register a request handler
                     .listen(8080, '127.0.0.1')      // Listen on 127.0.0.1:8080
             } else {
-                // Otherwise, exit the application
-                LoggerFactory.getLogger(Exercise7).error('Failed to deploy EventVerticle', res.cause())
+                (0..(cf.size()-1)).each { x ->
+                    if (cf.failed(x)) {
+                        LoggerFactory.getLogger(Exercise8).error('Failed to deploy verticle', cf.cause(x))
+                    }
+                }
                 vertx.close()
             }
         })
+
+        vertx.deployVerticle('groovy:EventVerticle.groovy', eventVerticleFuture.completer())
+        vertx.deployVerticle('groovy:AnotherVerticle.groovy', anotherVerticleFuture.completer())
     }
 
     void rootHandler(RoutingContext ctx) {

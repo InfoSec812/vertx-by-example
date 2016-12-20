@@ -7,7 +7,7 @@ import io.vertx.groovy.core.eventbus.Message
 
 import static groovy.json.JsonOutput.toJson
 
-class MainVerticle extends GroovyVerticle {
+class Exercise6 extends GroovyVerticle {
 
     void start() {
         def router = Router.router(vertx)

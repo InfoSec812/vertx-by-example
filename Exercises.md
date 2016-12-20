@@ -433,7 +433,6 @@ class Exercise8 extends GroovyVerticle {
         }
     }
 }
-
 ```
 
 Next Steps: (see [CompositeFuture](http://vertx.io/docs/apidocs/io/vertx/core/CompositeFuture.html) and 
@@ -441,3 +440,147 @@ Next Steps: (see [CompositeFuture](http://vertx.io/docs/apidocs/io/vertx/core/Co
 * Modify the example above to use a List of futures instead of specifying each future as a parameter.
 * Remove the CompositeFuture and use composed [Future](http://vertx.io/docs/apidocs/io/vertx/core/Future.html)s to 
   load one verticle after another
+
+### Exercise 9: Using Shared Data
+While you can coordinate between verticles very well using String and JsonObject instances, it is sometimes better to 
+share certain objects across multiple verticles. Vert.x makes this possible via 2 facilities.
+
+#### Exercise 9.1: Shared Local Map
+The [Vertx.sharedData()](http://vertx.io/docs/apidocs/io/vertx/core/Vertx.html#sharedData--) method allows us to get an
+instance of [LocalMap](http://vertx.io/docs/apidocs/io/vertx/core/shareddata/LocalMap.html) which can store most 
+Immutable data types as well as custom types which implement the [Shareable](http://vertx.io/docs/apidocs/io/vertx/core/shareddata/Shareable.html)
+interface. Storing data in a these LocalMap instances makes those objects available to other Verticles without having to
+use the EventBus to send those objects.
+
+[Exercise9_1.groovy](Exercise9/Exercise9_1.groovy)
+```groovy
+import io.vertx.core.logging.LoggerFactory
+import io.vertx.lang.groovy.GroovyVerticle
+
+class Exercise9_1 extends GroovyVerticle {
+
+    @Override
+    void start() throws Exception {
+
+        // Deploy AnotherVerticle 10 times
+        (1 .. 10).each {
+            vertx.deployVerticle('groovy:AnotherVerticle.groovy')
+        }
+
+        vertx.setPeriodic(100, this.&showDeployedVerticles)
+    }
+
+    void showDeployedVerticles(Long t) {
+        // Print the list of deployment IDs stored in the shared data local Map
+        LoggerFactory.getLogger(Exercise9_1).info('Polling shared data map')
+        def localMap = vertx.sharedData().getLocalMap('shared')
+        localMap.getDelegate().keySet().each {
+            println "${it} - ${localMap.get(it)}".toString()
+        }
+        println ''
+        println ''
+    }
+}
+```
+
+[AnotherVerticle.groovy](Exercise9/AnotherVerticle.groovy)
+```groovy
+import io.vertx.core.logging.LoggerFactory
+import io.vertx.lang.groovy.GroovyVerticle
+
+class AnotherVerticle extends GroovyVerticle {
+
+    @Override
+    void start() throws Exception {
+        vertx.sharedData().getLocalMap('shared').put(context.deploymentID(), Thread.currentThread().name)
+
+        LoggerFactory.getLogger(AnotherVerticle).info("Deployed AnotherVerticle: ${context.deploymentID()}")
+    }
+}
+```
+
+#### Exercise 9.2: Clustered Async Map
+When running in a clustered configuration, sharing objects across Vert.x nodes requires a special feature known as
+[AsyncMap](http://vertx.io/docs/apidocs/io/vertx/core/shareddata/AsyncMap.html). The AsyncMap is handled by the Vert.x 
+[ClusterManager](http://vertx.io/docs/apidocs/io/vertx/core/spi/cluster/ClusterManager.html), which is responsible for
+ensuring that access to the AsyncMap data is handled in a cluster/thread-safe way.
+
+[Exercise9_2.groovy](Exercise9/Exercise9_2.groovy)
+```groovy
+import io.vertx.core.logging.LoggerFactory
+import io.vertx.lang.groovy.GroovyVerticle
+
+class Exercise9_1 extends GroovyVerticle {
+
+    @Override
+    void start() throws Exception {
+
+        // Get a reference to clusterWide map called 'shared'
+        vertx.sharedData().getClusterWideMap('shared', { res ->
+            if (res.succeeded()) {
+                // Write to the map and await success
+                res.result().put('deployments', Arrays.asList(context.deploymentID()), { res1 ->
+                    // Deploy AnotherVerticle 10 times
+                    (1 .. 10).each {
+                        vertx.deployVerticle('groovy:ClusteredVerticle.groovy')
+                    }
+                })
+            }
+        })
+
+        vertx.setPeriodic(100, this.&showDeployedVerticles)
+    }
+
+    void showDeployedVerticles(Long t) {
+        // Print the list of deployment IDs stored in the shared data local Map
+        LoggerFactory.getLogger(Exercise9_1).info('Polling shared data map')
+
+        // Get reference to clusterWide map called 'shared'
+        def clusteredMap = vertx.sharedData().getClusterWideMap('shared', { res ->
+            if (res.succeeded()) {
+                // Get the 'deployments' value from the AsyncMap
+                res.result().get('deployments', { res1 ->
+
+                    // Iterate over list of values
+                    res1.result().each {
+                        println it
+                    }
+                    println ''
+                    println ''
+                })
+            }
+        })
+    }
+}
+```
+
+[ClusteredVerticle.groovy](Exercise9/ClusteredVerticle.groovy)
+```groovy
+import io.vertx.core.logging.LoggerFactory
+import io.vertx.lang.groovy.GroovyVerticle
+
+class ClusteredVerticle extends GroovyVerticle {
+
+    @Override
+    void start() throws Exception {
+        // Get a reference to clusterWide map called 'shared'
+        vertx.sharedData().getClusterWideMap('shared', { res ->
+            if (res.succeeded()) {
+                // Get the 'deployments' list
+                res.result().get('deployments', { res1 ->
+                    List<String> deploymentList = res1.result()
+                    deploymentList.add(context.deploymentID())
+
+                    // Update the 'deployments' list
+                    res.result().put('deployments', deploymentList, { res2 ->
+                        LoggerFactory.getLogger(ClusteredVerticle).info("Deployed ClusteredVerticle: ${context.deploymentID()}")
+                    })
+                })
+            }
+        })
+    }
+}
+```
+
+This cluster-wide data coordination is complex, so it is always advisable to send shared data via the EventBus where 
+possible. 

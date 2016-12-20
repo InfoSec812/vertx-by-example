@@ -12,12 +12,12 @@ class EventVerticle extends GroovyVerticle {
         if ((Math.round(Math.random()*1))==1) {            // Randomly succeed or fail deployment of EventVerticle
             startFuture.complete()
         } else {
-            startFuture.fail('Random deployment failure')
+            startFuture.fail('Random deployment failure of EventVerticle')
         }
     }
 
     void doSomething(Message<JsonObject> msg) {
-        if ((Math.round(Math.random()*1))==1) {
+        if (Math.random()>=0.6666) {
             msg.reply(msg.body())
         } else {
             msg.fail(1, 'Random Failure')

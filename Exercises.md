@@ -503,7 +503,8 @@ class AnotherVerticle extends GroovyVerticle {
 When running in a clustered configuration, sharing objects across Vert.x nodes requires a special feature known as
 [AsyncMap](http://vertx.io/docs/apidocs/io/vertx/core/shareddata/AsyncMap.html). The AsyncMap is handled by the Vert.x 
 [ClusterManager](http://vertx.io/docs/apidocs/io/vertx/core/spi/cluster/ClusterManager.html), which is responsible for
-ensuring that access to the AsyncMap data is handled in a cluster/thread-safe way.
+ensuring that access to the AsyncMap data is handled in a cluster/thread-safe way. In order to use the AsyncMap, Vert.x 
+**MUST** be started in a clustered mode using `vertx run -cluster <Verticle>`
 
 [Exercise9_2.groovy](Exercise9/Exercise9_2.groovy)
 ```groovy

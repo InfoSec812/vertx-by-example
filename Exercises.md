@@ -586,4 +586,6 @@ class ClusteredVerticle extends GroovyVerticle {
 ```
 
 This cluster-wide data coordination is complex, so it is always advisable to send shared data via the EventBus where 
-possible. 
+possible. The ClusterManager and the AsyncMap implementations ensure that access to and writing of clustered resources
+are synchronized properly across the entire cluster and thust prevents race conditions. The negative impact being that 
+access to read/write clustered data is much slower.

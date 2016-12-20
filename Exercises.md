@@ -450,7 +450,9 @@ The [Vertx.sharedData()](http://vertx.io/docs/apidocs/io/vertx/core/Vertx.html#s
 instance of [LocalMap](http://vertx.io/docs/apidocs/io/vertx/core/shareddata/LocalMap.html) which can store most 
 Immutable data types as well as custom types which implement the [Shareable](http://vertx.io/docs/apidocs/io/vertx/core/shareddata/Shareable.html)
 interface. Storing data in a these LocalMap instances makes those objects available to other Verticles without having to
-use the EventBus to send those objects.
+use the EventBus to send those objects. **The Shared Local Map has no concurrency controls, so the last writer is always
+the winner. If assurance of ordered writes is required, then the user must implement their own concurrency controls or
+only use data structures which ensure thread safety.**
 
 [Exercise9_1.groovy](Exercise9/Exercise9_1.groovy)
 ```groovy

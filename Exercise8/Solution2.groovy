@@ -1,15 +1,28 @@
 import io.vertx.core.AsyncResult
+import io.vertx.core.Future
 import io.vertx.core.json.JsonObject
+import io.vertx.core.logging.LoggerFactory
 import io.vertx.groovy.core.eventbus.Message
+import io.vertx.groovy.ext.web.Router
 import io.vertx.groovy.ext.web.RoutingContext
 import io.vertx.lang.groovy.GroovyVerticle
 
 import static groovy.json.JsonOutput.toJson
 
-class Exercise7 extends GroovyVerticle {
+class Solution2 extends GroovyVerticle {
 
     void start() {
-        vertx.deployVerticle('groovy:EventVerticle.groovy', this.&deployHandler)
+
+        Future allDone = Future.future()
+        allDone.setHandler(this.&deployHandler)
+
+        Future eventVerticleFuture = Future.future()
+
+        vertx.deployVerticle('groovy:EventVerticle.groovy', eventVerticleFuture.completer())
+
+        eventVerticleFuture.compose({ v ->
+            vertx.deployVerticle('groovy:AnotherVerticle.groovy', allDone.completer())
+        }, allDone)
     }
 
     void rootHandler(RoutingContext ctx) {
@@ -32,9 +45,9 @@ class Exercise7 extends GroovyVerticle {
         }
     }
 
-    void deployHandler(AsyncResult<String> res) {
-        if (res.succeeded()) {
-            LoggerFactory.getLogger(Exercise7).info('Successfully deployed EventVerticle')
+    void deployHandler(Future f) {
+        if (f.succeeded()) {
+            LoggerFactory.getLogger(Solution2).info('Successfully deployed all verticles')
 
             // If the EventVerticle successfully deployed, configure and start the HTTP server
             def router = Router.router(vertx)
@@ -45,8 +58,7 @@ class Exercise7 extends GroovyVerticle {
                 .requestHandler(router.&accept) // Register a request handler
                 .listen(8080, '127.0.0.1')      // Listen on 127.0.0.1:8080
         } else {
-            // Otherwise, exit the application
-            LoggerFactory.getLogger(Exercise7).error('Failed to deploy EventVerticle', res.cause())
+            LoggerFactory.getLogger(Solution2).error('Failed to deploy verticle', f.cause())
             vertx.close()
         }
     }

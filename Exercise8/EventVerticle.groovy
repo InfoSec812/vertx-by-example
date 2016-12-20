@@ -1,5 +1,6 @@
 import io.vertx.core.Future
 import io.vertx.core.json.JsonObject
+import io.vertx.core.logging.LoggerFactory
 import io.vertx.groovy.core.eventbus.Message
 import io.vertx.lang.groovy.GroovyVerticle
 
@@ -10,8 +11,10 @@ class EventVerticle extends GroovyVerticle {
         vertx.eventBus().consumer('event.verticle', this.&doSomething)
 
         if ((Math.round(Math.random()*1))==1) {            // Randomly succeed or fail deployment of EventVerticle
+            LoggerFactory.getLogger(EventVerticle).info('Deployed EventVerticle')
             startFuture.complete()
         } else {
+            LoggerFactory.getLogger(EventVerticle).error('Failed EventVerticle')
             startFuture.fail('Random deployment failure of EventVerticle')
         }
     }

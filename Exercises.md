@@ -589,3 +589,54 @@ This cluster-wide data coordination is complex, so it is always advisable to sen
 possible. The ClusterManager and the AsyncMap implementations ensure that access to and writing of clustered resources
 are synchronized properly across the entire cluster and thust prevents race conditions. The negative impact being that 
 access to read/write clustered data is much slower.
+
+### Exercise 10 - A TCP Echo Server
+As a quick introduction to the network server capabilities of Vert.x, Let's implement a TCP Echo Server. An echo server 
+is a network socket server which accepts incoming data and sends the same data back as a response.
+ 
+```groovy
+import io.vertx.core.AbstractVerticle
+import io.vertx.core.buffer.Buffer
+import io.vertx.core.logging.LoggerFactory
+import io.vertx.core.net.NetServer
+import io.vertx.core.net.NetServerOptions
+import io.vertx.core.net.NetSocket
+
+class EchoServer extends AbstractVerticle {
+
+    void start() {
+        NetServerOptions opts = new NetServerOptions()
+                .setHost("0.0.0.0")
+                .setPort(1080)
+                .setLogActivity(true)
+
+        NetServer server = vertx.createNetServer(opts)
+        server.connectHandler(this.&connectHandler).listen()
+    }
+
+    void connectHandler(NetSocket socket) {
+            socket.handler(this.&dataHandler.curry(socket))
+    }
+
+    void dataHandler(NetSocket socket, Buffer b) {
+        LoggerFactory.getLogger(EchoServer).info(b.toString())
+        socket.write(b)
+    }
+}
+```
+
+There are some new things to learn in this example. For one, there is the introduction of NetServer and it's associated 
+options; but that it mostly self-explanitory. The other thing to make note of is the use of the 
+[Buffer](http://vertx.io/docs/apidocs/io/vertx/core/buffer/Buffer.html) object. From the Vert.x API documentation:
+
+> Most data is shuffled around inside Vert.x using buffers.
+> A buffer is a sequence of zero or more bytes that can read from or written to and which expands automatically as necessary to accommodate any bytes written to it. You can perhaps think of a buffer as smart byte array.
+
+You can think of *Buffer*s as a way of pushing around streams of bytes. Buffers also have some convenience methods
+like `toString()`, `toJsonObject()`, and `toJsonArray()`. You can append to a Buffer using one of the provided append
+methods which can handle input types like Int/Float/Short/Unsigned/String/Byte/Long/Double. There are also append 
+methods for storing data in the buffer in little-endian byte order.
+
+Next Steps:
+* Modify the EchoServer above to take in some text (Latin characters, numbers, spaces, newlines ONLY), ignore non-text, 
+and send back `Hello <text>`.

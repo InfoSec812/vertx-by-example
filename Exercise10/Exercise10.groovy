@@ -5,7 +5,7 @@ import io.vertx.core.net.NetServer
 import io.vertx.core.net.NetServerOptions
 import io.vertx.core.net.NetSocket
 
-class EchoServer extends AbstractVerticle {
+class Exercise10 extends AbstractVerticle {
 
     void start() {
         NetServerOptions opts = new NetServerOptions()

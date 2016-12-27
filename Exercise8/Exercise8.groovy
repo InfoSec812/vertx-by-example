@@ -1,17 +1,11 @@
-import io.vertx.core.AsyncResult
+import io.vertx.core.logging.LoggerFactory
 import io.vertx.core.CompositeFuture
 import io.vertx.core.Future
-import io.vertx.core.json.JsonObject
-import io.vertx.groovy.core.eventbus.Message
-import io.vertx.groovy.ext.web.RoutingContext
+import io.vertx.ext.web.Router
 import io.vertx.lang.groovy.GroovyVerticle
 
-import static groovy.json.JsonOutput.toJson
-
 class Exercise8 extends GroovyVerticle {
-
     void start() {
-
         Future eventVerticleFuture = Future.future()
         Future anotherVerticleFuture = Future.future()
 
@@ -19,26 +13,6 @@ class Exercise8 extends GroovyVerticle {
 
         vertx.deployVerticle('groovy:EventVerticle.groovy', eventVerticleFuture.completer())
         vertx.deployVerticle('groovy:AnotherVerticle.groovy', anotherVerticleFuture.completer())
-    }
-
-    void rootHandler(RoutingContext ctx) {
-        def msg = new JsonObject([path: ctx.request().path()])
-        def replyHandler = { AsyncResult<Message> reply -> this.replyHandler(ctx, reply) }
-        vertx.eventBus().send('event.verticle', msg, replyHandler)
-    }
-
-    void replyHandler(RoutingContext ctx, AsyncResult<Message> reply) {
-        def response = ctx.response()
-                          .putHeader('Content-Type', 'application/json')
-        if (reply.succeeded()) {
-            response.setStatusCode(200)
-               .setStatusMessage('OK')
-               .end(new JsonObject(reply.result().body()).encodePrettily())
-        } else {
-            response.setStatusCode(500)
-               .setStatusMessage('Server Error')
-               .end(toJson(reply.cause()))
-        }
     }
 
     void deployHandler(CompositeFuture cf) {

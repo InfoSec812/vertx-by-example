@@ -689,3 +689,7 @@ class UDPEchoServer extends GroovyVerticle {
     }
 }
 ```
+
+Next Steps:
+* Modify the EchoServer above to take in some text (Latin characters, numbers, spaces, newlines ONLY), ignore non-text, 
+and send back `Hello <text>`.

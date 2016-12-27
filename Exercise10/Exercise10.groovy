@@ -22,7 +22,7 @@ class Exercise10 extends AbstractVerticle {
     }
 
     void dataHandler(NetSocket socket, Buffer b) {
-        LoggerFactory.getLogger(EchoServer).info(b.toString())
+        LoggerFactory.getLogger(Exercise10).info(b.toString())
         socket.write(b)
     }
 }

@@ -6,7 +6,7 @@ import io.vertx.groovy.core.datagram.DatagramSocket
 import io.vertx.lang.groovy.GroovyVerticle
 
 class Exercise11 extends GroovyVerticle {
-    private final Logger LOG = LoggerFactory.getLogger(UDPEchoServer)
+    private final Logger LOG = LoggerFactory.getLogger(Exercise11)
 
     @Override
     void start() throws Exception {

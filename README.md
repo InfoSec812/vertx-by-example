@@ -693,3 +693,39 @@ class UDPEchoServer extends GroovyVerticle {
 Next Steps:
 * Modify the EchoServer above to take in some text (Latin characters, numbers, spaces, newlines ONLY), ignore non-text, 
 and send back `Hello <text>`.
+
+### Exercise 12
+
+HTTP is a mainstay of software these days, so being able to make and handle HTTP requests is vital. Let's see how Vert.x
+make HTTP requests in an asynchronous manner:
+
+```groovy
+import io.vertx.core.logging.Logger
+import io.vertx.core.logging.LoggerFactory
+import io.vertx.groovy.core.http.HttpClientResponse
+import io.vertx.lang.groovy.GroovyVerticle
+
+class Exercise12 extends GroovyVerticle {
+
+    private static final Logger LOG = LoggerFactory.getLogger(Exercise12)
+
+    @Override
+    void start() throws Exception {
+        def client = vertx.createHttpClient()
+                          .getNow('www.google.com', '/', this.&responseHandler)
+    }
+
+    void responseHandler(HttpClientResponse response) {
+        if (response.statusCode()==200 && response.statusMessage()=='OK') {
+            LOG.info('Success!')
+        } else {
+            LOG.warn("Got ${response.statusCode()} as the response code.")
+        }
+        vertx.close()
+    }
+}
+```
+
+Next Steps
+* Make an HTTP GET request which uses HTTP Basic Authentication
+* Make an HTTP POST request which sends a JSON body

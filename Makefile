@@ -1,6 +1,6 @@
 SHELL := /bin/bash
 
-.PHONY: Exercise1 Exercise2 Exercise3_1 Exercise3_2 Exercise3_3 Exercise3_3_1 Exercise4 Exercise5 Exercise6 Exercise7 Exercise8 Exercise9_1 Exercise9_2 Exercise10 Exercise11
+.PHONY: Exercise1 Exercise2 Exercise3_1 Exercise3_2 Exercise3_3 Exercise3_3_1 Exercise4 Exercise5 Exercise6 Exercise7 Exercise8 Exercise9_1 Exercise9_2 Exercise10 Exercise11 Exercise12
 
 BASEDIR := $(PWD)
 
@@ -50,4 +50,7 @@ Exercise10: vertx/bin/vertx
 	@cd $(BASEDIR)/$@; vertx run $@.groovy
 
 Exercise11: vertx/bin/vertx
+	@cd $(BASEDIR)/$@; vertx run $@.groovy
+
+Exercise12: vertx/bin/vertx
 	@cd $(BASEDIR)/$@; vertx run $@.groovy

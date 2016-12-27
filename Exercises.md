@@ -640,3 +640,52 @@ methods for storing data in the buffer in little-endian byte order.
 Next Steps:
 * Modify the EchoServer above to take in some text (Latin characters, numbers, spaces, newlines ONLY), ignore non-text, 
 and send back `Hello <text>`.
+
+
+### Exercide 11
+
+Vert.x also has the ability to create UDP servers. Let's see what a UDP echo server would look like in Vert.x:
+
+```groovy
+import io.vertx.core.AsyncResult
+import io.vertx.core.logging.Logger
+import io.vertx.core.logging.LoggerFactory
+import io.vertx.groovy.core.datagram.DatagramPacket
+import io.vertx.groovy.core.datagram.DatagramSocket
+import io.vertx.lang.groovy.GroovyVerticle
+
+class UDPEchoServer extends GroovyVerticle {
+    private final Logger LOG = LoggerFactory.getLogger(UDPEchoServer)
+
+    @Override
+    void start() throws Exception {
+        DatagramSocket socket = vertx.createDatagramSocket()
+
+        socket.listen(1080, "0.0.0.0", { res ->
+            socketHandler(res)
+        })
+    }
+
+    void socketHandler(AsyncResult<DatagramSocket> res) {
+        if (res.succeeded()) {
+            // Successfully received a datagram
+            def socket = res.result()
+            socket.handler(this.&datagramHandler.curry(socket))
+        }
+    }
+
+    void datagramHandler(DatagramSocket socket, DatagramPacket p) {
+        socket.send(p.data(), p.sender().port(), p.sender().host(), { sent ->
+            sendHandler(sent)
+        })
+    }
+
+    void sendHandler(sent) {
+        if (sent.succeeded()) {
+            LOG.info("SUCCESS")
+        } else {
+            LOG.error("FAILED")
+        }
+    }
+}
+```

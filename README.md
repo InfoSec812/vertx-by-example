@@ -729,3 +729,23 @@ class Exercise12 extends GroovyVerticle {
 Next Steps
 * Make an HTTP GET request which uses HTTP Basic Authentication
 * Make an HTTP POST request which sends a JSON body
+
+### Exercise 13
+
+We've covered a number of individual features of Vert.x, Async, and non-blocking APIs in Vert.x, but in this exercise we
+will try to put a few different ones together. Here's the scenario:
+
+* An HTTP server listening on port 8080
+* A web browser will make a request to the '/merged/' endpoint
+* The Vert.x application will execute several operations in parallel
+  * Request the `www.google.com` index page
+  * Read a file (Your choice, but make it a simple short file) from the filesystem
+  * Perform a DNS lookup on `www.google.com`
+* Once all of the parallel operations are complete, insert the file contents and the dns results into a `<pre>` block 
+  before the ending `</body>` tag in the html retrieved from Google (Note: [Groovy Regex Replace](http://naleid.com/blog/2008/05/19/dont-fear-the-regexp))
+* Return the modified Google index page to the browser
+* If ANY one of the async operations fails, return a 500 HTTP response with the exception's `localizedMessage` value.
+
+There is only one component here which you are not already familiar with, and that is the
+[DNSClient](http://vertx.io/docs/vertx-core/groovy/#_dns_client). The DNS client relatively simple, and it will be left
+up to you to read the documentation and use it.

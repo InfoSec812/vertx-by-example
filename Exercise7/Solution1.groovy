@@ -1,8 +1,8 @@
 import io.vertx.core.AsyncResult
-import io.vertx.core.CompositeFuture
-import io.vertx.core.Future
 import io.vertx.core.json.JsonObject
 import io.vertx.core.logging.LoggerFactory
+import io.vertx.groovy.core.CompositeFuture
+import io.vertx.groovy.core.Future
 import io.vertx.groovy.core.eventbus.Message
 import io.vertx.groovy.ext.web.RoutingContext
 import io.vertx.lang.groovy.GroovyVerticle

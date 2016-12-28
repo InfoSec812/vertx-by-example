@@ -1,17 +1,17 @@
-import io.vertx.core.AbstractVerticle
 import io.vertx.core.buffer.Buffer
 import io.vertx.core.logging.LoggerFactory
-import io.vertx.core.net.NetServer
-import io.vertx.core.net.NetServerOptions
-import io.vertx.core.net.NetSocket
+import io.vertx.groovy.core.net.NetServer
+import io.vertx.groovy.core.net.NetSocket
+import io.vertx.lang.groovy.GroovyVerticle
 
-class Exercise10 extends AbstractVerticle {
+class Exercise10 extends GroovyVerticle {
 
     void start() {
-        NetServerOptions opts = new NetServerOptions()
-                .setHost("0.0.0.0")
-                .setPort(1080)
-                .setLogActivity(true)
+        def opts = [
+            host: '0.0.0.0',
+            port: 1080,
+            logActivity: true
+        ]
 
         NetServer server = vertx.createNetServer(opts)
         server.connectHandler(this.&connectHandler).listen()

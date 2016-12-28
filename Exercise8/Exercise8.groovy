@@ -1,7 +1,7 @@
 import io.vertx.core.logging.LoggerFactory
-import io.vertx.core.CompositeFuture
-import io.vertx.core.Future
-import io.vertx.ext.web.Router
+import io.vertx.groovy.core.CompositeFuture
+import io.vertx.groovy.core.Future
+import io.vertx.groovy.ext.web.Router
 import io.vertx.lang.groovy.GroovyVerticle
 
 class Exercise8 extends GroovyVerticle {
@@ -36,5 +36,9 @@ class Exercise8 extends GroovyVerticle {
             }
             vertx.close()
         }
+    }
+
+    void rootHandler(RoutingContext ctx) {
+        ctx.response().end(new JsonObject([ok: true, path: ctx.request().path()]).encode())
     }
 }

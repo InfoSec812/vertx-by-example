@@ -642,7 +642,7 @@ Next Steps:
 and send back `Hello <text>`.
 
 
-### Exercide 11
+### Exercise 11
 
 Vert.x also has the ability to create UDP servers. Let's see what a UDP echo server would look like in Vert.x:
 
@@ -752,8 +752,9 @@ up to you to read the documentation and use it.
 
 Next Steps:
 * Modify the solution for Exercise 13 so that you can 
-  [pass in](http://vertx.io/docs/vertx-core/groovy/#_the_vertx_command_line) a `config.json` file which contains the 
-  settings for:
+  [pass in](http://vertx.io/docs/vertx-core/groovy/#_the_vertx_command_line) a `config.json` file from which the 
+  application will [read](http://vertx.io/docs/vertx-core/groovy/#_passing_configuration_to_a_verticle) the settings 
+  for:
   * HTTP client host
   * HTTP client URI
   * HTTP client port

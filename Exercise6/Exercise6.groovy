@@ -1,8 +1,8 @@
+import io.vertx.core.AsyncResult
 import io.vertx.lang.groovy.GroovyVerticle
 import io.vertx.groovy.ext.web.Router
 import io.vertx.groovy.ext.web.RoutingContext
 import io.vertx.core.json.JsonObject
-import io.vertx.core.AsyncResult
 import io.vertx.groovy.core.eventbus.Message
 
 import static groovy.json.JsonOutput.toJson

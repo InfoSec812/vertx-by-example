@@ -761,3 +761,72 @@ Next Steps:
   * HTTP client SSL enable/disable
   * DNS hostname to be resolved
   * Filename to be read
+
+### Exercise 14
+
+Let's jump back into `vertx-web` again a little deeper... One interesting aspect of the `Router` and `RoutingContext` is
+that routes can be *chained*. What this means is that if you have a path which starts with `/rest`, and all routes
+under that path will all do some of the same tasks, you can extract those operations into an earlier route which then
+calls `RoutingContext.next()` and the request will be processed by other routes which might match. Here's an example:
+
+```groovy
+import io.vertx.core.json.JsonObject
+import io.vertx.groovy.ext.web.Router
+import io.vertx.groovy.ext.web.RoutingContext
+import io.vertx.lang.groovy.GroovyVerticle
+
+import static io.netty.handler.codec.http.HttpResponseStatus.OK
+import static io.netty.handler.codec.http.HttpResponseStatus.UNAUTHORIZED
+
+class Exercise14 extends GroovyVerticle {
+
+    @Override
+    void start() throws Exception {
+        Router router = Router.router(vertx)
+
+        router.route().handler(this.&authHandler)
+        router.route('/rest/*').handler(this.&restHandler)
+        router.get('/rest/customer/:id').handler(this.&customerByIdHandler)
+
+        vertx.createHttpServer().requestHandler(router.&accept).listen(8080, '0.0.0.0')
+    }
+
+    void authHandler(RoutingContext ctx) {
+        // Do something to validate authentication
+        ctx.put('authenticated', true)
+        ctx.next()
+    }
+
+    void restHandler(RoutingContext ctx) {
+        // All REST requests will have certain common requirements
+
+        ctx.response()
+            .putHeader('Content-Type', 'application/json') // Set the response Content-Type to application/json
+            .putHeader('Cache-Control', 'nocache') // Disable caching for browsers which respect this header
+            .putHeader('Expires', 'Tue, 15 Nov 1994 12:45:26 GMT') // Set some expiry date in the past to help prevent caching
+        ctx.next()
+    }
+
+    void customerByIdHandler(RoutingContext ctx) {
+        if (ctx.get('authenticated')) {
+            // The 'authenticated' value is set in the authHandler method/route, and so it should be present here!!
+            ctx.response().setStatusCode(OK.code())
+                          .setStatusMessage(OK.reasonPhrase())
+                          .end(new JsonObject([:]).encodePrettily())  // The headers set in restHandler are already set as well!
+        } else {
+            ctx.response().setStatusCode(UNAUTHORIZED.code())
+                          .setStatusMessage(UNAUTHORIZED.reasonPhrase())
+                          .end(new JsonObject([:]).encodePrettily())  // The headers set in restHandler are already set as well!
+        }
+    }
+}
+```
+
+In this, admittedly contrived, example; we see that any request which matches '/rest/customer/:id' will match all of the
+previous routes as well. Since the handlers for each of those routes are calling `RoutingContext.next()` on the 
+RoutingContext object, ALL of these handlers will be applied in order!
+
+Next Steps:
+* Do some research in the Vert.x documentation, and determine how to add a *catch-all* route which will handle any 
+  previously unhandled requests by sending a custom JSON 404 response
+* Create a *catch-all* route which will instead serve up [static filesystem resources](http://vertx.io/docs/vertx-web/groovy/#_serving_static_resources)

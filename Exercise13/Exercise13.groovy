@@ -28,18 +28,7 @@ class Exercise13 extends GroovyVerticle {
 
         def googFuture = Future.future()
         futureList.add(googFuture)
-        vertx.createHttpClient([ssl:true]).getNow(443, 'www.google.com', '/', { res ->
-            LOG.info('HTTP Request response recieved.')
-            if (res.statusCode()==200) {
-                res.bodyHandler({ b ->
-                    LOG.info('HTML Body content recieved')
-                    googFuture.complete(b)
-                })
-            } else {
-                LOG.error('HTTP request failed')
-                googFuture.fail(res.statusMessage())
-            }
-        })
+        vertx.createHttpClient([ssl:true]).getNow(443, 'www.google.com', '/', this.&httpClientResponseHandler.curry(googFuture))
 
         def fileFuture = Future.future()
         futureList.add(fileFuture)
@@ -52,12 +41,22 @@ class Exercise13 extends GroovyVerticle {
         CompositeFuture.all(futureList).setHandler(this.&resultHandler.curry(ctx))
     }
 
+    void httpClientResponseHandler(Future googFuture, HttpClientResponse res) {
+        LOG.info('HTTP Request response recieved.')
+        if (res.statusCode() == OK.code()) {
+            res.bodyHandler({ b -> googFuture.complete(b)})
+        } else {
+            LOG.error('HTTP request failed')
+            googFuture.fail(res.statusMessage())
+        }
+    }
+
     void resultHandler(RoutingContext ctx, AsyncResult<CompositeFuture> res) {
         LOG.info('All futures resolved.')
         if (res.failed()) {
             LOG.error('One or more items failed.', res.cause())
-            ctx.response().setStatusCode(500)
-                          .setStatusMessage('INTERNAL SERVER ERROR')
+            ctx.response().setStatusCode(INTERNAL_SERVER_ERROR.code())
+                          .setStatusMessage(INTERNAL_SERVER_ERROR.reasonPhrase())
                           .putHeader('Content-Type', 'text/plain')
                           .end(res.cause().localizedMessage)
         } else {
@@ -96,14 +95,14 @@ class Exercise13 extends GroovyVerticle {
                 def output = matcher.replaceAll(insert)
 
                 LOG.info('Output generated')
-                ctx.response().setStatusCode(200)
-                              .setStatusMessage('OK')
+                ctx.response().setStatusCode(OK.code())
+                              .setStatusMessage(OK.reasonPhrase())
                               .putHeader('Content-Type', 'text/html')
                               .end(output)
             } catch (Throwable t) {
                 LOG.error('Something Bad!', t)
-                ctx.response().setStatusCode(500)
-                              .setStatusMessage('INTERNAL SERVER ERROR')
+                ctx.response().setStatusCode(INTERNAL_SERVER_ERROR.code())
+                              .setStatusMessage(INTERNAL_SERVER_ERROR.reasonPhrase())
                               .putHeader('Content-Type', 'text/plain')
                               .end(t.localizedMessage)
             }

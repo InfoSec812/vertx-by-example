@@ -749,3 +749,14 @@ will try to put a few different ones together. Here's the scenario:
 There is only one component here which you are not already familiar with, and that is the
 [DNSClient](http://vertx.io/docs/vertx-core/groovy/#_dns_client). The DNS client relatively simple, and it will be left
 up to you to read the documentation and use it.
+
+Next Steps:
+* Modify the solution for Exercise 13 so that you can 
+  [pass in](http://vertx.io/docs/vertx-core/groovy/#_the_vertx_command_line) a `config.json` file which contains the 
+  settings for:
+  * HTTP client host
+  * HTTP client URI
+  * HTTP client port
+  * HTTP client SSL enable/disable
+  * DNS hostname to be resolved
+  * Filename to be read

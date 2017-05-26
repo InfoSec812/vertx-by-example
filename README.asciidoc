@@ -2,6 +2,7 @@
 
 1. Download the FULL Vert.x distribution from http://vertx.io/[http://vertx.io/] and ensure that the **vertx** command is in your path (vertx/bin/vertx)
 2. Create a new file **Exercise1.groovy** with the following contents:
+
 .Exercise1/Exercise1.java
 [source,"java"]
 ----

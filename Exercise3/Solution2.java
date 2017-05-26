@@ -1,9 +1,9 @@
-import io.vertx.core.AbstractVerticle;;
-import io.vertx.core.json.JsonObject;;
-import io.vertx.core.http.HttpServerRequest;;
+import io.vertx.core.AbstractVerticle;
+import io.vertx.core.json.JsonObject;
+import io.vertx.core.http.HttpServerRequest;
 
-import java.util.HashMap;;
-import java.util.Map;;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Solution2 extends AbstractVerticle {
 

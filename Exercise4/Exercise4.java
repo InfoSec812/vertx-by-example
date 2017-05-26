@@ -1,7 +1,7 @@
-import io.vertx.core.AbstractVerticle;;
-import io.vertx.ext.web.Router;;
-import io.vertx.ext.web.RoutingContext;;
-import io.vertx.core.json.JsonObject;;
+import io.vertx.core.AbstractVerticle;
+import io.vertx.ext.web.Router;
+import io.vertx.ext.web.RoutingContext;
+import io.vertx.core.json.JsonObject;
 
 public class Exercise4 extends AbstractVerticle {
 

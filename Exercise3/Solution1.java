@@ -1,6 +1,6 @@
-import io.vertx.core.AbstractVerticle;;
-import io.vertx.core.json.JsonObject;;
-import io.vertx.core.http.HttpServerRequest;;
+import io.vertx.core.AbstractVerticle;
+import io.vertx.core.json.JsonObject;
+import io.vertx.core.http.HttpServerRequest;
 
 public class Solution1 extends AbstractVerticle {
 

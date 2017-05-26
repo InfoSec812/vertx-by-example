@@ -1,6 +1,6 @@
-import io.vertx.core.AbstractVerticle;;
-import io.vertx.core.json.JsonObject;;
-import io.vertx.core.json.JsonObject;;
+import io.vertx.core.AbstractVerticle;
+import io.vertx.core.json.JsonObject;
+import io.vertx.core.json.JsonObject;
 
 public class Exercise2 extends AbstractVerticle {
 

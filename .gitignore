@@ -7,6 +7,6 @@ vertx/**
 .vertx/
 lib/
 lib/**
-/testing-vertx-with-spock/target/
-/testing-vertx-with-spock/.vertx/
-/testing-vertx-with-spock/testing-vertx-with-spock.iml
+Exercise15/target/
+Exercise15/.vertx/
+Exercise15Exercise15.iml

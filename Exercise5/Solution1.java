@@ -8,12 +8,12 @@ public class Solution1 extends AbstractVerticle {
     public void start() {
         def router = Router.router(vertx)
 
-        router.get('/')            .handler(this.&rootHandler)
-        router.get('/customer/:id').handler(this.&custHandler)
-        router.get('/customer/:id/address/:index').handler(this.&addrHandler)
+        router.get('/')            .handler(this::rootHandler)
+        router.get('/customer/:id').handler(this::custHandler)
+        router.get('/customer/:id/address/:index').handler(this::addrHandler)
 
         vertx.createHttpServer()             // Create a new HttpServer
-            .requestHandler(router.&accept) // Register a request handler
+            .requestHandler(router::accept) // Register a request handler
             .listen(8080, '127.0.0.1')      // Listen on 127.0.0.1:8080
     }
 

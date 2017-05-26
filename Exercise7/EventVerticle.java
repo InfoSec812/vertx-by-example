@@ -7,7 +7,7 @@ public class EventVerticle extends AbstractVerticle {
 
     @Override
     public void start(Future startFuture) {
-        vertx.eventBus().consumer('event.verticle', this.&doSomething)
+        vertx.eventBus().consumer('event.verticle', this::doSomething)
 
         if ((Math.round(Math.random()*1))==1) {            // Randomly succeed or fail deployment of EventVerticle
             startFuture.complete()

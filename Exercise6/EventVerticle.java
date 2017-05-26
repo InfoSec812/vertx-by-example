@@ -6,7 +6,7 @@ public class EventVerticle extends AbstractVerticle {
 
     @Override
     public void start() {
-        vertx.eventBus().consumer('event.verticle', this.&doSomething)
+        vertx.eventBus().consumer('event.verticle', this::doSomething)
     }
 
     void doSomething(Message<JsonObject> msg) {

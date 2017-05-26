@@ -14,11 +14,11 @@ public class Exercise10 extends AbstractVerticle {
         ]
 
         NetServer server = vertx.createNetServer(opts)
-        server.connectHandler(this.&connectHandler).listen()
+        server.connectHandler(this::connectHandler).listen()
     }
 
     void connectHandler(NetSocket socket) {
-            socket.handler(this.&dataHandler.curry(socket))
+            socket.handler(this::dataHandler.curry(socket))
     }
 
     void dataHandler(NetSocket socket, Buffer b) {

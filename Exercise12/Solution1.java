@@ -10,7 +10,7 @@ public class Solution1 extends AbstractVerticle {
     @Override
     public void start() throws Exception {
         def req = vertx.createHttpClient()
-                          .get('www.google.com', '/', this.&responseHandler)
+                          .get('www.google.com', '/', this::responseHandler)
         def base64key = Base64.encoder.encodeToString(new StringBuilder('username')
                                                 .append(":").append('password')
                                                 .toString().getBytes())

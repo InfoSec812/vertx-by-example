@@ -6,13 +6,13 @@ import io.vertx.core.json.JsonObject;
 public class Exercise5 extends AbstractVerticle {
 
     public void start() {
-        def router = Router.router(vertx)
+        Router router = Router.router(vertx)
 
-        router.get('/')            .handler(this.&rootHandler)
-        router.get('/customer/:id').handler(this.&custHandler)
+        router.get('/')            .handler(this::rootHandler)
+        router.get('/customer/:id').handler(this::custHandler)
 
         vertx.createHttpServer()             // Create a new HttpServer
-            .requestHandler(router.&accept) // Register a request handler
+            .requestHandler(router::accept) // Register a request handler
             .listen(8080, '127.0.0.1')      // Listen on 127.0.0.1:8080
     }
 

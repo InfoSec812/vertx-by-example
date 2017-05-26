@@ -10,7 +10,7 @@ public class Exercise12 extends AbstractVerticle {
     @Override
     public void start() throws Exception {
         def client = vertx.createHttpClient()
-                          .getNow('www.google.com', '/', this.&responseHandler)
+                          .getNow('www.google.com', '/', this::responseHandler)
     }
 
     void responseHandler(HttpClientResponse response) {

@@ -13,8 +13,8 @@ public class Solution1 extends AbstractVerticle {
     def failCount = 0
 
     public void start() {
-        vertx.deployVerticle('groovy:EventVerticle.groovy', this.&deployHandler)
-        vertx.deployVerticle('groovy:AnotherVerticle.groovy', this.&deployHandler)
+        vertx.deployVerticle('groovy:EventVerticle.groovy', this::deployHandler)
+        vertx.deployVerticle('groovy:AnotherVerticle.groovy', this::deployHandler)
     }
 
     void rootHandler(RoutingContext ctx) {
@@ -44,10 +44,10 @@ public class Solution1 extends AbstractVerticle {
             // If the EventVerticle successfully deployed, configure and start the HTTP server
             def router = Router.router(vertx)
 
-            router.get().handler(this.&rootHandler)
+            router.get().handler(this::rootHandler)
 
             vertx.createHttpServer()            // Create a new HttpServer
-                .requestHandler(router.&accept) // Register a request handler
+                .requestHandler(router::accept) // Register a request handler
                 .listen(8080, '127.0.0.1')      // Listen on 127.0.0.1:8080
         } else {
             LoggerFactory.getLogger(Solution1).error('Failed to deploy EventVerticle', res.cause())
@@ -56,7 +56,7 @@ public class Solution1 extends AbstractVerticle {
                 // Otherwise, exit the application
                 vertx.close()
             } else {
-                vertx.deployVerticle('groovy:EventVerticle.groovy', this.&deployHandler)
+                vertx.deployVerticle('groovy:EventVerticle.groovy', this::deployHandler)
             }
         }
     }

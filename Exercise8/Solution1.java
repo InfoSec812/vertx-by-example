@@ -18,7 +18,7 @@ public class Solution1 extends AbstractVerticle {
         Future anotherVerticleFuture = Future.future()
         def futureList = [eventVerticleFuture, anotherVerticleFuture]
 
-        CompositeFuture.join(futureList).setHandler(this.&deployHandler)
+        CompositeFuture.join(futureList).setHandler(this::deployHandler)
 
         vertx.deployVerticle('groovy:EventVerticle.groovy', eventVerticleFuture.completer())
         vertx.deployVerticle('groovy:AnotherVerticle.groovy', anotherVerticleFuture.completer())
@@ -51,10 +51,10 @@ public class Solution1 extends AbstractVerticle {
             // If the EventVerticle successfully deployed, configure and start the HTTP server
             def router = Router.router(vertx)
 
-            router.get().handler(this.&rootHandler)
+            router.get().handler(this::rootHandler)
 
             vertx.createHttpServer()            // Create a new HttpServer
-                .requestHandler(router.&accept) // Register a request handler
+                .requestHandler(router::accept) // Register a request handler
                 .listen(8080, '127.0.0.1')      // Listen on 127.0.0.1:8080
         } else {
             def range = 0..(cf.size() - 1)

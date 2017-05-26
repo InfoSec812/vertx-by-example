@@ -30,13 +30,13 @@ public class Solution1 extends AbstractVerticle {
         def futureList = []
         verticleList.each {
             Future f = Future.future()
-            vertx.deployVerticle(it.key, it.value, this.&deployHandler.rcurry(f).rcurry(verticleName).rcurry(it.value))
+            vertx.deployVerticle(it.key, it.value, this::deployHandler.rcurry(f).rcurry(verticleName).rcurry(it.value))
             futureList.add(f)
         }
 
         futureList.add(dbFuture)
 
-        CompositeFuture.join(futureList).setHandler(this.&resolutionHandler)
+        CompositeFuture.join(futureList).setHandler(this::resolutionHandler)
     }
 
     void resolutionHandler(AsyncResult<CompositeFuture> res) {
@@ -44,10 +44,10 @@ public class Solution1 extends AbstractVerticle {
             // If the EventVerticle successfully deployed, configure and start the HTTP server
             def router = Router.router(vertx)
 
-            router.get().handler(this.&rootHandler)
+            router.get().handler(this::rootHandler)
 
             vertx.createHttpServer()            // Create a new HttpServer
-                    .requestHandler(router.&accept) // Register a request handler
+                    .requestHandler(router::accept) // Register a request handler
                     .listen(8080, '127.0.0.1')      // Listen on 127.0.0.1:8080
         } else {
             vertx.close()
@@ -93,7 +93,7 @@ public class Solution1 extends AbstractVerticle {
                 f.failed()
             } else {
                 //
-                vertx.deployVerticle(verticleName, this.&deployHandler.rcurry(f).rcurry(verticleName).rcurry(options))
+                vertx.deployVerticle(verticleName, this::deployHandler.rcurry(f).rcurry(verticleName).rcurry(options))
             }
         }
     }

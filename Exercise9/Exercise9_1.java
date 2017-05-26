@@ -11,7 +11,7 @@ public class Exercise9_1 extends AbstractVerticle {
             vertx.deployVerticle('groovy:AnotherVerticle.groovy')
         }
 
-        vertx.setPeriodic(100, this.&showDeployedVerticles)
+        vertx.setPeriodic(100, this::showDeployedVerticles)
     }
 
     void showDeployedVerticles(Long t) {

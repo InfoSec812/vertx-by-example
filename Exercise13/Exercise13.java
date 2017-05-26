@@ -17,9 +17,9 @@ public class Exercise13 extends AbstractVerticle {
     public void start() throws Exception {
         Router router = Router.router(vertx)
 
-        router.route('/merged/').handler(this.&reqHandler)
+        router.route('/merged/').handler(this::reqHandler)
 
-        vertx.createHttpServer().requestHandler(router.&accept).listen(8080, '0.0.0.0')
+        vertx.createHttpServer().requestHandler(router::accept).listen(8080, '0.0.0.0')
     }
 
     void reqHandler(RoutingContext ctx) {
@@ -28,7 +28,7 @@ public class Exercise13 extends AbstractVerticle {
 
         def googFuture = Future.future()
         futureList.add(googFuture)
-        vertx.createHttpClient([ssl:true]).getNow(443, 'www.google.com', '/', this.&httpClientResponseHandler.curry(googFuture))
+        vertx.createHttpClient([ssl:true]).getNow(443, 'www.google.com', '/', this::httpClientResponseHandler.curry(googFuture))
 
         def fileFuture = Future.future()
         futureList.add(fileFuture)
@@ -38,7 +38,7 @@ public class Exercise13 extends AbstractVerticle {
         futureList.add(dnsFuture)
         vertx.createDnsClient(53, '8.8.8.8').lookup4('www.google.com', dnsFuture.completer())
 
-        CompositeFuture.all(futureList).setHandler(this.&resultHandler.curry(ctx))
+        CompositeFuture.all(futureList).setHandler(this::resultHandler.curry(ctx))
     }
 
     void httpClientResponseHandler(Future googFuture, HttpClientResponse res) {

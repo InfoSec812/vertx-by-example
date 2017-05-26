@@ -19,7 +19,7 @@ public class Exercise9_1 extends AbstractVerticle {
             }
         })
 
-        vertx.setPeriodic(100, this.&showDeployedVerticles)
+        vertx.setPeriodic(100, this::showDeployedVerticles)
     }
 
     void showDeployedVerticles(Long t) {

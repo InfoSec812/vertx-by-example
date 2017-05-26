@@ -11,7 +11,7 @@ public class Solution2 extends AbstractVerticle {
     @Override
     public void start() throws Exception {
         def req = vertx.createHttpClient()
-                          .post('www.google.com', '/', this.&responseHandler)
+                          .post('www.google.com', '/', this::responseHandler)
         req.end(new JsonObject([ok: true, status: 'Good', detail: 'Something']).encode())
     }
 

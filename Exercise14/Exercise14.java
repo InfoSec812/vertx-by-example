@@ -12,11 +12,11 @@ public class Exercise14 extends AbstractVerticle {
     public void start() throws Exception {
         Router router = Router.router(vertx)
 
-        router.route().handler(this.&authHandler)
-        router.route('/rest/*').handler(this.&restHandler)
-        router.get('/rest/customer/:id').handler(this.&customerByIdHandler)
+        router.route().handler(this::authHandler)
+        router.route('/rest/*').handler(this::restHandler)
+        router.get('/rest/customer/:id').handler(this::customerByIdHandler)
 
-        vertx.createHttpServer().requestHandler(router.&accept).listen(8080, '0.0.0.0')
+        vertx.createHttpServer().requestHandler(router::accept).listen(8080, '0.0.0.0')
     }
 
     void authHandler(RoutingContext ctx) {

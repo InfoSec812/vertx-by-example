@@ -33,9 +33,9 @@ public class Solution1 extends AbstractVerticle {
 
         config += context.config()
 
-        router.route('/merged/').handler(this.&reqHandler)
+        router.route('/merged/').handler(this::reqHandler)
 
-        vertx.createHttpServer().requestHandler(router.&accept).listen(8080, '0.0.0.0')
+        vertx.createHttpServer().requestHandler(router::accept).listen(8080, '0.0.0.0')
     }
 
     void reqHandler(RoutingContext ctx) {
@@ -44,7 +44,7 @@ public class Solution1 extends AbstractVerticle {
 
         def googFuture = Future.future()
         futureList.add(googFuture)
-        vertx.createHttpClient([ssl:true]).getNow(config.webPort, config.webHost, config.webUri, this.&httpClientResponseHandler.curry(googFuture))
+        vertx.createHttpClient([ssl:true]).getNow(config.webPort, config.webHost, config.webUri, this::httpClientResponseHandler.curry(googFuture))
 
         def fileFuture = Future.future()
         futureList.add(fileFuture)
@@ -54,7 +54,7 @@ public class Solution1 extends AbstractVerticle {
         futureList.add(dnsFuture)
         vertx.createDnsClient(config.dnsPort, config.dnsServer).lookup4(config.hostname, dnsFuture.completer())
 
-        CompositeFuture.all(futureList).setHandler(this.&resultHandler.curry(ctx))
+        CompositeFuture.all(futureList).setHandler(this::resultHandler.curry(ctx))
     }
 
     void httpClientResponseHandler(Future googFuture, HttpClientResponse res) {

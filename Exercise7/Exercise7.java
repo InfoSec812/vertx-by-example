@@ -9,7 +9,7 @@ import static groovy.json.JsonOutput.toJson;
 public class Exercise7 extends AbstractVerticle {
 
     public void start() {
-        vertx.deployVerticle('groovy:EventVerticle.groovy', this.&deployHandler)
+        vertx.deployVerticle('groovy:EventVerticle.groovy', this::deployHandler)
     }
 
     void rootHandler(RoutingContext ctx) {
@@ -39,10 +39,10 @@ public class Exercise7 extends AbstractVerticle {
             // If the EventVerticle successfully deployed, configure and start the HTTP server
             def router = Router.router(vertx)
 
-            router.get().handler(this.&rootHandler)
+            router.get().handler(this::rootHandler)
 
             vertx.createHttpServer()            // Create a new HttpServer
-                .requestHandler(router.&accept) // Register a request handler
+                .requestHandler(router::accept) // Register a request handler
                 .listen(8080, '127.0.0.1')      // Listen on 127.0.0.1:8080
         } else {
             // Otherwise, exit the application

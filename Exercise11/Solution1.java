@@ -19,7 +19,7 @@ public class Solution1 extends AbstractVerticle {
     void socketHandler(AsyncResult<DatagramSocket> res) {
         if (res.succeeded()) {
             // Successfully received a datagram
-            DatagramSocket socket = res.result()''
+            DatagramSocket socket = res.result();
             socket.handler(p -> this.datagramHandler(socket, p));
         }
     }

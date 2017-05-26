@@ -1,21 +1,15 @@
 ### **Exercise 1:** Simple Vert.x Hello World Web Server
 
 1. Download the FULL Vert.x distribution from http://vertx.io/[http://vertx.io/] and ensure that the **vertx** command is in your path (vertx/bin/vertx)
-
 2. Create a new file **Exercise1.groovy** with the following contents:
-
 .Exercise1/Exercise1.java
 [source,"java"]
 ----
 include::Exercise1/Exercise1.java[]
 ----
-
-
-
+[start=3]
 3. Run the verticle with the command `**vertx run Exercise1.groovy**`
-
     1. You should see a message like: `Succeeded in deploying verticle`
-
 4. Open a browser and point it at: http://localhost:8080/[http://localhost:8080/]
 
 Next Steps: (see http://vertx.io/docs/apidocs/io/vertx/core/http/HttpServerResponse.html[HttpServerResponse])
@@ -144,7 +138,7 @@ include::Exercise6/Exercise6.java[]
 ----
 
 
-(**NOTE:** When using `**vertx run <VerticleName>**` to launch Vert.x applications, the files should be in the current 
+(**NOTE:** When using `**vertx run <VerticleName>**` to launch Vert.x applications, the files should be in the current
 working directory or a child directory referenced by it's relative path)
 
 Several new concepts have been introduced in this example:
@@ -159,9 +153,9 @@ thread-safe manner
 * Using http://vertx.io/docs/apidocs/io/vertx/core/eventbus/Message.html[Message] objects - Message objects consist of JsonObject or String contents and can be replied to
 
 ### **Exercise 7:** Deploy With Futures
-Often, the application will need to ensure that certain Verticles are 
-already up and running before proceeding to do other actions. To allow for 
-this, Vert.x provides a way of deploying Verticles with a callback once 
+Often, the application will need to ensure that certain Verticles are
+already up and running before proceeding to do other actions. To allow for
+this, Vert.x provides a way of deploying Verticles with a callback once
 the deployment is complete.
 
 .Exercise7/Exercise7.java
@@ -182,7 +176,7 @@ Next Steps:
 * Modify the example above to deploy more than one Verticle and call the new Verticle `AnotherVerticle.groovy`
 
 ### Exercise 8: Asynchronous Coordination
-It is useful to coordinate several asynchronous operations in a single handler for certain situations. To 
+It is useful to coordinate several asynchronous operations in a single handler for certain situations. To
 facilitate this, Vert.x provides a http://vertx.io/docs/apidocs/io/vertx/core/CompositeFuture.html[CompositeFuture]
 
 .Exercise8/Exercise8.java
@@ -191,19 +185,19 @@ facilitate this, Vert.x provides a http://vertx.io/docs/apidocs/io/vertx/core/Co
 include::Exercise8/Exercise8.java[]
 ----
 
-Next Steps: (see http://vertx.io/docs/apidocs/io/vertx/core/CompositeFuture.html[CompositeFuture] and 
+Next Steps: (see http://vertx.io/docs/apidocs/io/vertx/core/CompositeFuture.html[CompositeFuture] and
 http://vertx.io/docs/vertx-core/groovy/#_sequential_composition[Async Coordination])
 * Modify the example above to use a List of futures instead of specifying each future as a parameter.
-* Remove the CompositeFuture and use composed http://vertx.io/docs/apidocs/io/vertx/core/Future.html[Future]s to 
+* Remove the CompositeFuture and use composed http://vertx.io/docs/apidocs/io/vertx/core/Future.html[Future]s to
   load one verticle after another
 
 ### Exercise 9: Using Shared Data
-While you can coordinate between verticles very well using String and JsonObject instances over the EventBus, it is 
+While you can coordinate between verticles very well using String and JsonObject instances over the EventBus, it is
 sometimes better to share certain objects across multiple verticles. Vert.x makes this possible via 2 facilities.
 
 #### Exercise 9.1: Shared Local Map
 The http://vertx.io/docs/apidocs/io/vertx/core/Vertx.html#sharedData--[Vertx.sharedData()] method allows us to get an
-instance of http://vertx.io/docs/apidocs/io/vertx/core/shareddata/LocalMap.html[LocalMap] which can store most 
+instance of http://vertx.io/docs/apidocs/io/vertx/core/shareddata/LocalMap.html[LocalMap] which can store most
 Immutable data types as well as custom types which implement the http://vertx.io/docs/apidocs/io/vertx/core/shareddata/Shareable.html[Shareable]
 interface. Storing data in a these LocalMap instances makes those objects available to other Verticles without having to
 use the EventBus to send those objects. **The Shared Local Map has no concurrency controls, so the last writer is always
@@ -224,9 +218,9 @@ include::Exercise9/AnotherVerticle.java[]
 
 #### Exercise 9.2: Clustered Async Map
 When running in a clustered configuration, sharing objects across Vert.x nodes requires a special feature known as
-http://vertx.io/docs/apidocs/io/vertx/core/shareddata/AsyncMap.html[AsyncMap]. The AsyncMap is handled by the Vert.x 
+http://vertx.io/docs/apidocs/io/vertx/core/shareddata/AsyncMap.html[AsyncMap]. The AsyncMap is handled by the Vert.x
 http://vertx.io/docs/apidocs/io/vertx/core/spi/cluster/ClusterManager.html[ClusterManager], which is responsible for
-ensuring that access to the AsyncMap data is handled in a cluster/thread-safe way. In order to use the AsyncMap, Vert.x 
+ensuring that access to the AsyncMap data is handled in a cluster/thread-safe way. In order to use the AsyncMap, Vert.x
 **MUST** be started in a clustered mode using `vertx run -cluster <Verticle>`
 
 .Exercise9/Exercise9_2.java
@@ -241,13 +235,13 @@ include::Exercise9/Exercise9_2.java[]
 include::Exercise9/ClusteredVerticle.java[]
 ----
 
-This cluster-wide data coordination is complex, so it is always advisable to send shared data via the EventBus where 
+This cluster-wide data coordination is complex, so it is always advisable to send shared data via the EventBus where
 possible. The ClusterManager and the AsyncMap implementations ensure that access to and writing of clustered resources
-are synchronized properly across the entire cluster and thust prevents race conditions. The negative impact being that 
+are synchronized properly across the entire cluster and thust prevents race conditions. The negative impact being that
 access to read/write clustered data is much slower.
 
 ### Exercise 10 - A TCP Echo Server
-As a quick introduction to the network server capabilities of Vert.x, Let's implement a TCP Echo Server. An echo server 
+As a quick introduction to the network server capabilities of Vert.x, Let's implement a TCP Echo Server. An echo server
 is a network socket server which accepts incoming data and sends the same data back as a response.
 
 .Exercise10/Exercise10.java
@@ -256,8 +250,8 @@ is a network socket server which accepts incoming data and sends the same data b
 include::Exercise10/Exercise10.java[]
 ----
 
-There are some new things to learn in this example. For one, there is the introduction of NetServer and it's associated 
-options; but that it mostly self-explanitory. The other thing to make note of is the use of the 
+There are some new things to learn in this example. For one, there is the introduction of NetServer and it's associated
+options; but that it mostly self-explanitory. The other thing to make note of is the use of the
 http://vertx.io/docs/apidocs/io/vertx/core/buffer/Buffer.html[Buffer] object. From the Vert.x API documentation:
 
 > Most data is shuffled around inside Vert.x using buffers.
@@ -265,12 +259,12 @@ http://vertx.io/docs/apidocs/io/vertx/core/buffer/Buffer.html[Buffer] object. Fr
 
 You can think of *Buffer*s as a way of pushing around streams of bytes. Buffers also have some convenience methods
 like `toString()`, `toJsonObject()`, and `toJsonArray()`. You can append to a Buffer using one of the provided append
-methods which can handle input types like Int/Float/Short/Unsigned/String/Byte/Long/Double. There are also append 
+methods which can handle input types like Int/Float/Short/Unsigned/String/Byte/Long/Double. There are also append
 methods for storing data in the buffer in little-endian byte order.
 
 Next Steps:
 
-* Modify the EchoServer above to take in some text (Latin characters, numbers, spaces, newlines ONLY), ignore non-text, 
+* Modify the EchoServer above to take in some text (Latin characters, numbers, spaces, newlines ONLY), ignore non-text,
 and send back `Hello <text>`.
 
 
@@ -286,7 +280,7 @@ include::Exercise11/Exercise11.java[]
 
 Next Steps:
 
-* Modify the EchoServer above to take in some text (Latin characters, numbers, spaces, newlines ONLY), ignore non-text, 
+* Modify the EchoServer above to take in some text (Latin characters, numbers, spaces, newlines ONLY), ignore non-text,
 and send back `Hello <text>`.
 
 ### Exercise 12
@@ -316,7 +310,7 @@ will try to put a few different ones together. Here's the scenario:
   * Request the `www.google.com` index page
   * Read a file (Your choice, but make it a simple short file) from the filesystem
   * Perform a DNS lookup on `www.google.com`
-* Once all of the parallel operations are complete, insert the file contents and the dns results into a `<pre>` block 
+* Once all of the parallel operations are complete, insert the file contents and the dns results into a `<pre>` block
   before the ending `</body>` tag in the html retrieved from Google (Note: http://naleid.com/blog/2008/05/19/dont-fear-the-regexp[Groovy Regex Replace])
 * Return the modified Google index page to the browser
 * If ANY one of the async operations fails, return a 500 HTTP response with the exception's `localizedMessage` value.
@@ -327,9 +321,9 @@ up to you to read the documentation and use it.
 
 Next Steps:
 
-* Modify the solution for Exercise 13 so that you can 
-  http://vertx.io/docs/vertx-core/groovy/#_the_vertx_command_line[pass in] a `config.json` file from which the 
-  application will http://vertx.io/docs/vertx-core/groovy/#_passing_configuration_to_a_verticle[read] the settings 
+* Modify the solution for Exercise 13 so that you can
+  http://vertx.io/docs/vertx-core/groovy/#_the_vertx_command_line[pass in] a `config.json` file from which the
+  application will http://vertx.io/docs/vertx-core/groovy/#_passing_configuration_to_a_verticle[read] the settings
   for:
 ** HTTP client host
 ** HTTP client URI
@@ -352,11 +346,11 @@ include::Exercise14/Exercise14.java[]
 ----
 
 In this, admittedly contrived, example; we see that any request which matches '/rest/customer/:id' will match all of the
-previous routes as well. Since the handlers for each of those routes are calling `RoutingContext.next()` on the 
+previous routes as well. Since the handlers for each of those routes are calling `RoutingContext.next()` on the
 RoutingContext object, ALL of these handlers will be applied in order!
 
 Next Steps:
-* Do some research in the Vert.x documentation, and determine how to add a *catch-all* route which will handle any 
+* Do some research in the Vert.x documentation, and determine how to add a *catch-all* route which will handle any
   previously unhandled requests by sending a custom JSON 404 response
 * Create a *catch-all* route which will instead serve up http://vertx.io/docs/vertx-web/groovy/#_serving_static_resources[static filesystem resources]
 

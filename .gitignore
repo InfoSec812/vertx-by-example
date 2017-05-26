@@ -7,3 +7,6 @@ vertx/**
 .vertx/
 lib/
 lib/**
+Exercise15/target/
+Exercise15/.vertx/
+Exercise15Exercise15.iml

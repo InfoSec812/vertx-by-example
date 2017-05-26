@@ -359,3 +359,28 @@ Next Steps:
 * Do some research in the Vert.x documentation, and determine how to add a *catch-all* route which will handle any 
   previously unhandled requests by sending a custom JSON 404 response
 * Create a *catch-all* route which will instead serve up http://vertx.io/docs/vertx-web/groovy/#_serving_static_resources[static filesystem resources]
+
+### Exercise 15
+
+Now that we have a basic understanding of event based programming in Vert.x, let's learn how we can test our code when operating in an asynchronous world.
+In this example we will have a single Verticle which sets itself up to listen on the event bus. And using http://www.spockframework.org[Spock Framework] we
+will add a behavior test in order to make sure that our Verticle functions as expected.
+
+.Exercise15/src/main/java/com/redhat/labs/vertx/exercise15/Main.java
+[source, "java"]
+----
+include::Exercise15/src/main/java/com/redhat/labs/vertx/exercise15/Main.java[]
+----
+
+.Exercise15/src/test/groovy/com/redhat/labs/vertx/exercise15/MainSpec.groovy
+[source, "groovy"]
+----
+include::Exercise15/src/test/groovy/com/redhat/labs/vertx/exercise15/MainSpec.groovy[]
+----
+<1> Spock uses https://github.com/cucumber/cucumber/wiki/Gherkin[Gherkin] style syntax in the form of *given*, *when*, *then*
+<2> When testing asynchronous code, Spock gives you an *AsyncConditions* class which can be used to coordinate. The number passed indicates the number of async evaluation blocks which will need to be processed
+<3> This is an async evaluation block. In this case it checks to ensure that the Verticle is successfully deployed. Any assertions in this block must succeed or the test will fail
+<4> The *when* block is where we place the code to be tested
+<5> Another async evaluation block, this time checking to ensure that the reply message is correct
+<6> The *then* block is where we tell the system to check our work
+<7> The `async.await(10)` call tells Spock to wait for 10 seconds for the 2 async conditions to complete, and if it times out the test fails.

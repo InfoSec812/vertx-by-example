@@ -5,3 +5,5 @@ vertx
 vertx/**
 **/.vertx
 .vertx/
+lib/
+lib/**

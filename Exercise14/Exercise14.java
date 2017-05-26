@@ -40,7 +40,7 @@ public class Exercise14 extends AbstractVerticle {
             // The "authenticated" value is set in the authHandler method/route, and so it should be present here!!
             ctx.response().setStatusCode(OK.code())
                           .setStatusMessage(OK.reasonPhrase())
-                          .end("{}");  // The headers set in restHandler are already set as well!
+                          .end(new JsonObject().put("authenticated", true).encodePrettily());  // The headers set in restHandler are already set as well!
         } else {
             ctx.response().setStatusCode(UNAUTHORIZED.code())
                           .setStatusMessage(UNAUTHORIZED.reasonPhrase())

@@ -20,7 +20,7 @@ public class Solution2 extends AbstractVerticle {
         if (response.statusCode()==202 && response.statusMessage()=="OK") {
             LOG.info("Success!");
         } else {
-            LOG.warn("Got ${response.statusCode()} as the response code.");
+            LOG.warn("Got "+response.statusCode()+" as the response code.");
         }
         vertx.close();
     }

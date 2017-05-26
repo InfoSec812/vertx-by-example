@@ -7,12 +7,12 @@ public class AnotherVerticle extends AbstractVerticle {
 
     @Override
     public void start(Future startFuture) {
-        vertx.eventBus().consumer('another.verticle', this::doSomething)
+        vertx.eventBus().consumer("another.verticle", this::doSomething);
 
         if ((Math.round(Math.random()*1))==1) {            // Randomly succeed or fail deployment of EventVerticle
-            startFuture.complete()
+            startFuture.complete();
         } else {
-            startFuture.fail('Random deployment failure of AnotherVerticle')
+            startFuture.fail("Random deployment failure of AnotherVerticle");
         }
     }
 
@@ -20,7 +20,7 @@ public class AnotherVerticle extends AbstractVerticle {
         if (Math.random()>=0.6666) {
             msg.reply(msg.body())
         } else {
-            msg.fail(1, 'Random Failure')
+            msg.fail(1, "Random Failure");
 	}
     }
 }

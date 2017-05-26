@@ -1,76 +1,76 @@
 import io.vertx.core.AsyncResult;
+import io.vertx.core.http.HttpServerResponse;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
 import io.vertx.core.eventbus.Message;
+import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.core.AbstractVerticle;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static groovy.json.JsonOutput.toJson;
 
 public class Solution1 extends AbstractVerticle {
 
-    def failCount = 0
+    int failCount = 0;
 
     public void start() {
 
-        def dbFuture = Future.future()
+        Future<JsonObject> dbFuture = Future.future();
         if (Math.random()>=0.5) {
-            vertx.eventBus().send('db.test', dbFuture.completer())
+            vertx.eventBus().send("db.test", dbFuture.completer());
         } else {
-            dbFuture.complete([ok: null, details: 'blah', status: 'Unknown'])
+            dbFuture.complete(new JsonObject().put("ok", "null").put("details", "blah").put("status", "Unknown"));
         }
 
-        def verticleList = [
-            'groovy:EventVerticle.groovy': [:],
-            'groovy:AnotherVerticle.groovy': [:]
-        ]
+        List<String> verticleList = Arrays.asList("java:EventVerticle.java", "java:AnotherVerticle.java");
 
-        def futureList = []
-        verticleList.each {
-            Future f = Future.future()
-            vertx.deployVerticle(it.key, it.value, this::deployHandler.rcurry(f).rcurry(verticleName).rcurry(it.value))
-            futureList.add(f)
-        }
+        List<Future> futureList = verticleList.stream().map(it -> {
+            Future f = Future.future();
+            vertx.deployVerticle(it, null, result -> this.deployHandler(result, failCount, new HashMap<>(), it, f));
+            return f;
+        }).collect(Collectors.toList());
 
-        futureList.add(dbFuture)
+        futureList.add(dbFuture);
 
-        CompositeFuture.join(futureList).setHandler(this::resolutionHandler)
+        CompositeFuture.join(futureList).setHandler(this::resolutionHandler);
     }
 
-    void resolutionHandler(AsyncResult<CompositeFuture> res) {
+    protected void resolutionHandler(AsyncResult<CompositeFuture> res) {
         if (res.succeeded()) {
             // If the EventVerticle successfully deployed, configure and start the HTTP server
-            def router = Router.router(vertx)
+            Router router = Router.router(vertx);
 
-            router.get().handler(this::rootHandler)
+            router.get().handler(this::rootHandler);
 
             vertx.createHttpServer()            // Create a new HttpServer
                     .requestHandler(router::accept) // Register a request handler
-                    .listen(8080, '127.0.0.1')      // Listen on 127.0.0.1:8080
+                    .listen(8080, "127.0.0.1");      // Listen on 127.0.0.1:8080
         } else {
-            vertx.close()
+            vertx.close();
         }
     }
 
-    void rootHandler(RoutingContext ctx) {
-        def msg = new JsonObject([path: ctx.request().path()])
-        def replyHandler = { AsyncResult<Message> reply -> this.replyHandler(ctx, reply) }
-        vertx.eventBus().send('event.verticle', msg, replyHandler)
+    protected void rootHandler(RoutingContext ctx) {
+        JsonObject msg = new JsonObject().put("path", ctx.request().path());
+        vertx.eventBus().send("event.verticle", msg, reply -> this.replyHandler(ctx, reply));
     }
 
-    void replyHandler(RoutingContext ctx, AsyncResult<Message> reply) {
-        def response = ctx.response()
-                          .putHeader('Content-Type', 'application/json')
+    protected void replyHandler(RoutingContext ctx, AsyncResult<Message<Object>> reply) {
+        HttpServerResponse response = ctx.response()
+                          .putHeader("Content-Type", "application/json");
         if (reply.succeeded()) {
             response.setStatusCode(200)
-               .setStatusMessage('OK')
-               .end(new JsonObject(reply.result().body()).encodePrettily())
+               .setStatusMessage("OK")
+               .end(((JsonObject)reply.result().body()).encodePrettily());
         } else {
             response.setStatusCode(500)
-               .setStatusMessage('Server Error')
-               .end(toJson(reply.cause()))
+                    .setStatusMessage("Server Error")
+                    .end(new JsonObject().put("error", reply.cause().getLocalizedMessage()).encodePrettily());
         }
     }
 
@@ -82,18 +82,18 @@ public class Solution1 extends AbstractVerticle {
      * @param verticleName The name of the verticle to deploy
      * @param f A future which will be resolved either successfully or failed depending on if the verticle is deployed.
      */
-    void deployHandler(AsyncResult<String> res, int attemptCount = 0, Map options, String verticleName, Future f) {
+    protected void deployHandler(AsyncResult<String> res, int attemptCount, Map options, String verticleName, Future f) {
         if (res.succeeded()) {
-            LoggerFactory.getLogger(Solution1).info("Successfully deployed ${verticleName}")
-            f.complete()
+            LoggerFactory.getLogger("Solution1").info("Successfully deployed ${verticleName}");
+            f.complete();
         } else {
-            LoggerFactory.getLogger(Solution1).error("Failed to deploy ${verticleName}", res.cause())
-            failCount++
+            LoggerFactory.getLogger("Solution1").error("Failed to deploy ${verticleName}", res.cause());
+            failCount++;
             if (failCount==3) {
-                f.failed()
+                f.failed();
             } else {
                 //
-                vertx.deployVerticle(verticleName, this::deployHandler.rcurry(f).rcurry(verticleName).rcurry(options))
+                vertx.deployVerticle(verticleName, result -> this.deployHandler(result, failCount, new HashMap<>(), verticleName, f));
             }
         }
     }

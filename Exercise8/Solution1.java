@@ -13,8 +13,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import static java.json.JsonOutput.toJson;
-
 public class Solution1 extends AbstractVerticle {
 
     public void start() {

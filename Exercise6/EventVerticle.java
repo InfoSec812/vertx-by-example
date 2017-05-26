@@ -11,7 +11,7 @@ public class EventVerticle extends AbstractVerticle {
 
     void doSomething(Message<JsonObject> msg) {
         if ((Math.round(Math.random()*1))==1) {
-            msg.reply(msg.body())
+            msg.reply(msg.body());
         } else {
             msg.fail(1, "Random Failure");
 	    }

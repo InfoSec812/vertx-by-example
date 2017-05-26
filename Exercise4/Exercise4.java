@@ -5,7 +5,7 @@ import io.vertx.core.json.JsonObject;;
 
 public class Exercise4 extends AbstractVerticle {
 
-    public public void start() {
+    public void start() {
         Router router = Router.router(vertx);
 
         router.get("/")              .handler(this::rootHandler);

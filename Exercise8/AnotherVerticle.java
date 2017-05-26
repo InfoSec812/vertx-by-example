@@ -8,22 +8,22 @@ public class AnotherVerticle extends AbstractVerticle {
 
     @Override
     public void start(Future startFuture) {
-        vertx.eventBus().consumer('another.verticle', this::doSomething)
+        vertx.eventBus().consumer("another.verticle", this::doSomething);
 
         if ((Math.round(Math.random()*1))==1) {            // Randomly succeed or fail deployment of AnotherVerticle
-            LoggerFactory.getLogger(AnotherVerticle).info('Deployed AnotherVerticle')
-            startFuture.complete()
+            LoggerFactory.getLogger("AnotherVerticle").info("Deployed AnotherVerticle");
+            startFuture.complete();
         } else {
-            LoggerFactory.getLogger(AnotherVerticle).error('Failed AnotherVerticle')
-            startFuture.fail('Random deployment failure of AnotherVerticle')
+            LoggerFactory.getLogger("AnotherVerticle").error("Failed AnotherVerticle");
+            startFuture.fail("Random deployment failure of AnotherVerticle");
         }
     }
 
     void doSomething(Message<JsonObject> msg) {
         if ((Math.round(Math.random()*1))==1) {
-            msg.reply(msg.body())
+            msg.reply(msg.body());
         } else {
-            msg.fail(1, 'Random Failure')
+            msg.fail(1, "Random Failure");
 	    }
     }
 }

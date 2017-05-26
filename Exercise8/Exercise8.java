@@ -1,44 +1,48 @@
+import io.vertx.core.AsyncResult;
+import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
 import io.vertx.ext.web.Router;
 import io.vertx.core.AbstractVerticle;
+import io.vertx.ext.web.RoutingContext;
+
+import java.util.stream.IntStream;
 
 public class Exercise8 extends AbstractVerticle {
     public void start() {
-        Future eventVerticleFuture = Future.future()
-        Future anotherVerticleFuture = Future.future()
+        Future eventVerticleFuture = Future.future();
+        Future anotherVerticleFuture = Future.future();
 
-        CompositeFuture.join(eventVerticleFuture, anotherVerticleFuture).setHandler(this::deployHandler)
+        CompositeFuture.join(eventVerticleFuture, anotherVerticleFuture).setHandler(this::deployHandler);
 
-        vertx.deployVerticle('groovy:EventVerticle.groovy', eventVerticleFuture.completer())
-        vertx.deployVerticle('groovy:AnotherVerticle.groovy', anotherVerticleFuture.completer())
+        vertx.deployVerticle("java:EventVerticle.java", eventVerticleFuture.completer());
+        vertx.deployVerticle("java:AnotherVerticle.java", anotherVerticleFuture.completer());
     }
 
-    void deployHandler(CompositeFuture cf) {
+    protected void deployHandler(AsyncResult<CompositeFuture> cf) {
         if (cf.succeeded()) {
-            LoggerFactory.getLogger(Exercise8).info('Successfully deployed all verticles')
+            LoggerFactory.getLogger("Exercise8").info("Successfully deployed all verticles");
 
             // If the EventVerticle successfully deployed, configure and start the HTTP server
-            def router = Router.router(vertx)
+            Router router = Router.router(vertx);
 
-            router.get().handler(this::rootHandler)
+            router.get().handler(this::rootHandler);
 
             vertx.createHttpServer()            // Create a new HttpServer
                 .requestHandler(router::accept) // Register a request handler
-                .listen(8080, '127.0.0.1')      // Listen on 127.0.0.1:8080
+                .listen(8080, "127.0.0.1");      // Listen on 127.0.0.1:8080
         } else {
-            def range = 0..(cf.size() - 1)
-            range.each { x ->
-                if (cf.failed(x)) {
-                    LoggerFactory.getLogger(Exercise8).error('Failed to deploy verticle', cf.cause(x))
+            IntStream.range(0, cf.result().size()).forEach(x -> {
+                if (cf.result().failed(x)) {
+                    LoggerFactory.getLogger("Exercise8").error("Failed to deploy verticle", cf.result().cause(x));
                 }
-            }
-            vertx.close()
+            });
+            vertx.close();
         }
     }
 
     void rootHandler(RoutingContext ctx) {
-        ctx.response().end(new JsonObject([ok: true, path: ctx.request().path()]).encode())
+        ctx.response().end(new JsonObject().put("ok", true).put("path", ctx.request().path()).encode());
     }
 }

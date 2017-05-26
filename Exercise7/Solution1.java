@@ -1,13 +1,10 @@
-import io.vertx.core.AsyncResult;
+import io.vertx.core.*;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.LoggerFactory;
-import io.vertx.core.CompositeFuture;
-import io.vertx.core.Future;
 import io.vertx.core.eventbus.Message;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
-import io.vertx.core.AbstractVerticle;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -31,7 +28,7 @@ public class Solution1 extends AbstractVerticle {
 
         List<Future> futureList = verticleList.stream().map(it -> {
             Future f = Future.future();
-            vertx.deployVerticle(it, null, result -> this.deployHandler(result, failCount, new HashMap<>(), it, f));
+            vertx.deployVerticle(it, new DeploymentOptions(), result -> this.deployHandler(result, failCount, new DeploymentOptions(), it, f));
             return f;
         }).collect(Collectors.toList());
 
@@ -82,18 +79,18 @@ public class Solution1 extends AbstractVerticle {
      * @param verticleName The name of the verticle to deploy
      * @param f A future which will be resolved either successfully or failed depending on if the verticle is deployed.
      */
-    protected void deployHandler(AsyncResult<String> res, int attemptCount, Map options, String verticleName, Future f) {
+    protected void deployHandler(AsyncResult<String> res, int attemptCount, DeploymentOptions options, String verticleName, Future f) {
         if (res.succeeded()) {
-            LoggerFactory.getLogger("Solution1").info("Successfully deployed ${verticleName}");
+            LoggerFactory.getLogger("Solution1").info("Successfully deployed "+verticleName);
             f.complete();
         } else {
-            LoggerFactory.getLogger("Solution1").error("Failed to deploy ${verticleName}", res.cause());
+            LoggerFactory.getLogger("Solution1").error("Failed to deploy "+verticleName, res.cause());
             failCount++;
             if (failCount==3) {
                 f.failed();
             } else {
                 //
-                vertx.deployVerticle(verticleName, result -> this.deployHandler(result, failCount, new HashMap<>(), verticleName, f));
+                vertx.deployVerticle(verticleName, result -> this.deployHandler(result, failCount, new DeploymentOptions(), verticleName, f));
             }
         }
     }

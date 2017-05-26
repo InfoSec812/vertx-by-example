@@ -12,7 +12,7 @@ import static groovy.json.JsonOutput.toJson;
 public class Exercise7 extends AbstractVerticle {
 
     public void start() {
-        vertx.deployVerticle("groovy:EventVerticle.groovy", this::deployHandler)
+        vertx.deployVerticle("java:EventVerticle.java", this::deployHandler);
     }
 
     void rootHandler(RoutingContext ctx) {
@@ -36,7 +36,7 @@ public class Exercise7 extends AbstractVerticle {
 
     void deployHandler(AsyncResult<String> res) {
         if (res.succeeded()) {
-            LoggerFactory.getLogger("Exercise7").info("Successfully deployed EventVerticle")
+            LoggerFactory.getLogger("Exercise7").info("Successfully deployed EventVerticle");
 
             // If the EventVerticle successfully deployed, configure and start the HTTP server
             Router router = Router.router(vertx);

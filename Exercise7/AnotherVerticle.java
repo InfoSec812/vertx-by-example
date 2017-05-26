@@ -18,7 +18,7 @@ public class AnotherVerticle extends AbstractVerticle {
 
     void doSomething(Message<JsonObject> msg) {
         if (Math.random()>=0.6666) {
-            msg.reply(msg.body())
+            msg.reply(msg.body());
         } else {
             msg.fail(1, "Random Failure");
 	}

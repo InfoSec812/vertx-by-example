@@ -1,41 +1,24 @@
 ### **Exercise 1:** Simple Vert.x Hello World Web Server
 
-1. Download the FULL Vert.x distribution from [http://vertx.io/](http://vertx.io/) and ensure that the **vertx** command is in your path (vertx/bin/vertx)
+1. Download the FULL Vert.x distribution from http://vertx.io/[http://vertx.io/] and ensure that the **vertx** command is in your path (vertx/bin/vertx)
 
 2. Create a new file **Exercise1.groovy** with the following contents:
 
-[Exercise1.groovy](Exercise1/Exercise1.groovy)
-```groovy
-import io.vertx.lang.groovy.GroovyVerticle
-import io.vertx.core.json.JsonObject
+.Exercise1/Exercise1.java
+[source,"java"]
+----
+include::Exercise1/Exercise1.java[]
+----
 
-class Exercise1 extends GroovyVerticle {
-
-    void start() {
-        // Create a new HttpServer
-        def server = vertx.createHttpServer()
-        
-        // Create a JSON response
-        def response = new JsonObject([ok: true]).encode()
-
-        // Register a request handler for the HttpServer
-        server.requestHandler({ req ->    
-                 req.response().end(response) })
-
-        // Listen on port 8080 and interface `127.0.0.1`
-        server.listen(8080, '127.0.0.1')
-    }
-}
-```
 
 
 3. Run the verticle with the command `**vertx run Exercise1.groovy**`
 
     1. You should see a message like: `Succeeded in deploying verticle`
 
-4. Open a browser and point it at: [http://localhost:8080/](http://localhost:8080/)
+4. Open a browser and point it at: http://localhost:8080/[http://localhost:8080/]
 
-Next Steps: (see [HttpServerResponse](http://vertx.io/docs/apidocs/io/vertx/core/http/HttpServerResponse.html))
+Next Steps: (see http://vertx.io/docs/apidocs/io/vertx/core/http/HttpServerResponse.html[HttpServerResponse])
 
 * Modify the example above to add a `Content-Type` response header
 
@@ -45,150 +28,65 @@ Next Steps: (see [HttpServerResponse](http://vertx.io/docs/apidocs/io/vertx/core
 
 ### **Exercise 2**: Are you fluent?!?!
 
-Vert.x APIs are written to be [fluent](https://en.wikipedia.org/wiki/Fluent_interface). This means that you can chain method calls together so that they form a sort of domain specific language which CAN be easier to read. We will modify our first example to use the fluent API in Vert.x to perform the same operations.
+Vert.x APIs are written to be https://en.wikipedia.org/wiki/Fluent_interface[fluent]. This means that you can chain method calls together so that they form a sort of domain specific language which CAN be easier to read. We will modify our first example to use the fluent API in Vert.x to perform the same operations.
 
-[Exercise2.groovy](Exercise2/Exercise2.groovy)
-```groovy
-import io.vertx.lang.groovy.GroovyVerticle
-import io.vertx.core.json.JsonObject
-
-class Exercise2 extends GroovyVerticle {
-
-    void start() {
-        // Create a JSON response
-        def response = new JsonObject([ok: true]).encode()
-
-        vertx.createHttpServer()         // Create a new HttpServer
-             .requestHandler({ req ->    // Register a request handler for the HttpServer
-                 req.response().end(response) })
-             .listen(8080, '127.0.0.1')  // Listen on port 8080 and interface `127.0.0.1`
-    }
-}
-```
+.Exercise2/Exercise2.java
+[source,"java"]
+----
+include::Exercise2/Exercise2.java[]
+----
 
 
 You’ll see that we chained the createHttpServer() method, which returns an HttpServer object, to the requestHandler() method. We then chained the requestHandler() method to the listen() method. Each of these chained methods returns the original HttpServer object so that we can make subsequent calls in a fluent manner.
 
 ### **Exercise 3:** Handlers
 
-A handler in Vert.x is a form of [Callback](https://en.wikipedia.org/wiki/Callback_(computer_programming)). Handlers are passed as arguments to some Vert.x methods so that the callback can be executed once a particular asynchronous operation has been completed. Handlers for Vert.x can be written in Groovy in several ways:
+A handler in Vert.x is a form of https://en.wikipedia.org/wiki/Callback_(computer_programming[Callback]). Handlers are passed as arguments to some Vert.x methods so that the callback can be executed once a particular asynchronous operation has been completed. Handlers for Vert.x can be written in Groovy in several ways:
 
 #### **Exercise 3.1:** Handler classes
 
-The basic Handler in Vert.x is any class which implements the [Handler](http://vertx.io/docs/apidocs/io/vertx/core/Handler.html) interface. For example:
+The basic Handler in Vert.x is any class which implements the http://vertx.io/docs/apidocs/io/vertx/core/Handler.html[Handler] interface. For example:
 
-[Exercise3_1.groovy](Exercise3/Exercise3_1.groovy)
-```groovy
-import io.vertx.lang.groovy.GroovyVerticle
-import io.vertx.core.json.JsonObject
-
-class Exercise3_1 extends GroovyVerticle {
-
-    private class RequestHandler implements Handler<HttpServerRequest> {
-        void handle(HttpServerRequest req) {
-            def response = new JsonObject([ok: true]).encode()
-            req.response().end(response)
-        }
-    }
-
-    void start() {
-        // Create a JSON response
-        def response = new JsonObject([ok: true]).encode()
-
-        vertx.createHttpServer()         // Create a new HttpServer
-             .requestHandler(new RequestHandler())
-             .listen(8080, '127.0.0.1')  // Listen on port 8080 and interface `127.0.0.1`
-    }
-}
-```
+.Exercise3/Exercise3_1.java
+[source,"java"]
+----
+include::Exercise3/Exercise3_1.java[]
+----
 
 
 As you can see, we pass an instance of the RequestHandler class to the requestHandler() method on the HttpServer object and that instance will handle the HTTP requests.
 
 #### **Exercise 3.2:** Method References
 
-Another way to implement handlers removes some of the boiler-plate of having a separate hanlder class for each Callback we want to register. It’s called a [Method Reference](http://docs.groovy-lang.org/latest/html/documentation/#method-pointer-operator). A method reference is a way of assigning a method to behave as a callback without having to implement a Handler interface on a new class.
+Another way to implement handlers removes some of the boiler-plate of having a separate hanlder class for each Callback we want to register. It’s called a http://docs.groovy-lang.org/latest/html/documentation/#method-pointer-operator[Method Reference]. A method reference is a way of assigning a method to behave as a callback without having to implement a Handler interface on a new class.
 
-[Exercise3_2.groovy](Exercise3/Exercise3_2.groovy)
-```groovy
-import io.vertx.groovy.core.http.HttpServerRequest
-import io.vertx.lang.groovy.GroovyVerticle
-import io.vertx.core.json.JsonObject
-
-class Exercise3_2 extends GroovyVerticle {
-
-    /**
-     * Handle HttpServerRequests
-     */
-    void handleRequest(HttpServerRequest req) {
-        def response = new JsonObject([ok: true]).encode()
-        req.response().end(response)
-    }
-
-    void start() {
-        // Create a JSON response
-        def response = new JsonObject([ok: true]).encode()
-
-        vertx.createHttpServer()         // Create a new HttpServer
-             .requestHandler(this.&handleRequest) // Register a request handler
-             .listen(8080, '127.0.0.1')  // Listen on port 8080 and interface `127.0.0.1`
-    }
-}
-```
+.Exercise3/Exercise3_2.java
+[source,"java"]
+----
+include::Exercise3/Exercise3_2.java[]
+----
 
 
-#### **Exercise 3.3:** Closures
+#### **Exercise 3.3:** Lambdas
 
-Finally, in Groovy we can use [Closures](http://docs.groovy-lang.org/latest/html/documentation/#_closures). Closures are a way of writing a bit of code which can be passed as a value . . . in-line…
+Finally, in Java we can use https://docs.oracle.com/javase/tutorial/java/javaOO/lambdaexpressions.html[Lambdas]. Lambdas are a way of writing a bit of code which can be passed as a value . . . in-line…
 
-[Exercise3_3.groovy](Exercise3/Exercise3_3.groovy)
-```groovy
-import io.vertx.lang.groovy.GroovyVerticle
-import io.vertx.core.json.JsonObject
-
-class HelloWorld extends GroovyVerticle {
-
-    void start() {
-        // Create a JSON response
-        def response = new JsonObject([ok: true]).encode()
-
-        vertx.createHttpServer()         // Create a new HttpServer
-             .requestHandler({ req ->    // Register a request handler
-                 req.response().end(response)
-             })
-             .listen(8080, '127.0.0.1')  // Listen on port 8080 and interface `127.0.0.1`
-    }
-}
-```
-
+.Exercise3/Exercise3_3.java
+[source,"java"]
+----
+include::Exercise3/Exercise3_3.java[]
+----
 
 An alternate way of declaring that closure would be to assign the closure to a variable and then pass the variable into the requestHandler() method as shown below:
 
-[Exercise3_3_1.groovy](Exercise3/Exercise3_3_1.groovy)
-```groovy
-import io.vertx.core.json.JsonObject
-import io.vertx.groovy.core.http.HttpServerRequest
-import io.vertx.lang.groovy.GroovyVerticle
-
-class Exercise3_3_1 extends GroovyVerticle {
-
-    void start() {
-
-        def reqHandler = { HttpServerRequest req ->
-            // Create a JSON response
-            def response = new JsonObject([ok: true]).encode()
-            req.response().end(response)
-        }
-
-        vertx.createHttpServer()         // Create a new HttpServer
-             .requestHandler(reqHandler) // Register a request handler
-             .listen(8080, '127.0.0.1')  // Listen on port 8080 and interface `127.0.0.1`
-    }
-}
-```
+.Exercise3/Exercise3_3_1.java
+[source,"java"]
+----
+include::Exercise3/Exercise3_3_1.java[]
+----
 
 
-Next Steps: (see [HttpServerRequest](http://vertx.io/docs/apidocs/io/vertx/core/http/HttpServerRequest.html))
+Next Steps: (see http://vertx.io/docs/apidocs/io/vertx/core/http/HttpServerRequest.html[HttpServerRequest])
 
 * Modify the example above to include the requested path as an item in the JSON response body
 
@@ -196,37 +94,13 @@ Next Steps: (see [HttpServerRequest](http://vertx.io/docs/apidocs/io/vertx/core/
 
 ### **Exercise 4:** Using Routers
 
-So far, we have seen that we can add a requestHandler() to an HTTP server, but what if we want to have a number of different paths which do different things in our web application? This is where the Vert.x Web module comes in. It gives us a new features like [Router](http://vertx.io/docs/apidocs/io/vertx/ext/web/Router.html) and [RoutingContext](http://vertx.io/docs/apidocs/io/vertx/ext/web/RoutingContext.html).
+So far, we have seen that we can add a requestHandler() to an HTTP server, but what if we want to have a number of different paths which do different things in our web application? This is where the Vert.x Web module comes in. It gives us a new features like http://vertx.io/docs/apidocs/io/vertx/ext/web/Router.html[Router] and http://vertx.io/docs/apidocs/io/vertx/ext/web/RoutingContext.html[RoutingContext].
 
-[Exercise4.groovy](Exercise4/Exercise4.groovy)
-```groovy
-import io.vertx.lang.groovy.GroovyVerticle
-import io.vertx.groovy.ext.web.Router
-import io.vertx.groovy.ext.web.RoutingContext
-import io.vertx.core.json.JsonObject
-
-class Exercise4 extends GroovyVerticle {
-
-    void start() {
-        def router = Router.router(vertx)
-
-        router.get('/')              .handler(this.&rootHandler)
-        router.get('/something/else').handler(this.&otherHandler)
-
-        vertx.createHttpServer()             // Create a new HttpServer
-             .requestHandler(router.&accept) // Register a request handler
-             .listen(8080, '127.0.0.1')      // Listen on 127.0.0.1:8080
-    }
-
-    void rootHandler(RoutingContext ctx) {
-        ctx.response().end(new JsonObject([ok: true, path: ctx.request().path()]).encode())
-    }
-
-    void otherHandler(RoutingContext ctx) {
-        ctx.response().end(new JsonObject([ok: false, message: 'Something Else']).encode())
-    }
-}
-```
+.Exercise4/Exercise4.java
+[source,"java"]
+----
+include::Exercise4/Exercise4.java[]
+----
 
 1. You see that we added 2 different routes to the Router instance
 
@@ -238,41 +112,14 @@ class Exercise4 extends GroovyVerticle {
 
 In the previous example, we saw that we could specify different paths with different handlers, but what about if we want to capture information FROM the path in a programmatic manner?
 
-[Exercise5.groovy](Exercise5/Exercise5.groovy)
-```groovy
-import io.vertx.lang.groovy.GroovyVerticle
-import io.vertx.groovy.ext.web.Router
-import io.vertx.groovy.ext.web.RoutingContext
-import io.vertx.core.json.JsonObject
-
-class Exercise5 extends GroovyVerticle {
-
-    void start() {
-        def router = Router.router(vertx)
-
-        router.get('/')            .handler(this.&rootHandler)
-        router.get('/customer/:id').handler(this.&custHandler)
-
-        vertx.createHttpServer()             // Create a new HttpServer
-            .requestHandler(router.&accept) // Register a request handler
-            .listen(8080, '127.0.0.1')      // Listen on 127.0.0.1:8080
-    }
-
-    void rootHandler(RoutingContext ctx) {
-        ctx.response().end(new JsonObject([ok: true, path: ctx.request().path()]).encode())
-    }
-
-    void custHandler(RoutingContext ctx) {
-        ctx.response().end(new JsonObject([
-           ok: false,
-           custID: ctx.request().getParam('id')
-        ]).encode())
-    }
-}
-```
+.Exercise5/Exercise5.java
+[source,"java"]
+----
+include::Exercise5/Exercise5.java[]
+----
 
 
-Next Steps: (see [Router](http://vertx.io/docs/apidocs/io/vertx/ext/web/Router.html), [Routing With Regular Expressions](http://vertx.io/docs/vertx-web/groovy/#_routing_with_regular_expressions), [Routing Based On MIME Types](http://vertx.io/docs/vertx-web/groovy/#_routing_based_on_mime_type_of_request), [Request Body Handling](http://vertx.io/docs/vertx-web/groovy/#_request_body_handling))
+Next Steps: (see http://vertx.io/docs/apidocs/io/vertx/ext/web/Router.html[Router], http://vertx.io/docs/vertx-web/groovy/#_routing_with_regular_expressions[Routing With Regular Expressions], http://vertx.io/docs/vertx-web/groovy/#_routing_based_on_mime_type_of_request[Routing Based On MIME Types], http://vertx.io/docs/vertx-web/groovy/#_request_body_handling[Request Body Handling])
 
 * Modify the example above to have a new route which had multiple path parameters
 
@@ -284,49 +131,17 @@ Next Steps: (see [Router](http://vertx.io/docs/apidocs/io/vertx/ext/web/Router.h
 
 So far, our exercised have done all of their work in a single Verticle (HelloWorld). This is fine for simple applications, but it does not scale well for larger and more complex applications. Each Verticle is single-threaded; so in order to utilize our CPU cores effectively, we need to distribute workloads across multiple Verticles.
 
-[EventVerticle.groovy](Exercise6/EventVerticle.groovy)
-```groovy
-import io.vertx.lang.groovy.GroovyVerticle
-import io.vertx.groovy.core.eventbus.Message
-import io.vertx.core.json.JsonObject
+.Exercise6/EventVerticle.java
+[source,"java"]
+----
+include::Exercise6/EventVerticle.java[]
+----
 
-class EventVerticle extends GroovyVerticle {
-
-    @Override
-    void start() {
-        vertx.eventBus().consumer('event.verticle', this.&doSomething)
-    }
-
-    void doSomething(Message<JsonObject> msg) {
-        if ((Math.round(Math.random()*1))==1) { // Randomly choose to return or fail
-            msg.reply(msg.body())
-        } else {
-            msg.fail(1, 'Random Failure')
-        }
-    }
-}
-```
-
-[Exercise6.groovy](Exercise6/Exercise6.groovy)
-```groovy
-// .. SNIP ..
-
-class Exercise6 extends GroovyVerticle {
-
-    void start() {
-        def router = Router.router(vertx)
-
-        router.get().handler(this.&rootHandler)
-
-        vertx.createHttpServer()            // Create a new HttpServer
-            .requestHandler(router.&accept) // Register a request handler
-            .listen(8080, '127.0.0.1')      // Listen on 127.0.0.1:8080
-        vertx.deployVerticle('groovy:EventVerticle.groovy')
-    }
-
-    // .. SNIP ..
-}
-```
+.Exercise6/Exercise6.java
+[source,"java"]
+----
+include::Exercise6/Exercise6.java[]
+----
 
 
 (**NOTE:** When using `**vertx run <VerticleName>**` to launch Vert.x applications, the files should be in the current 
@@ -334,14 +149,14 @@ working directory or a child directory referenced by it's relative path)
 
 Several new concepts have been introduced in this example:
 
-* The [EventBus](http://vertx.io/docs/vertx-core/groovy/#event_bus) - Used to communicate between Verticles in a 
+* The http://vertx.io/docs/vertx-core/groovy/#event_bus[EventBus] - Used to communicate between Verticles in a
 thread-safe manner
 
 * Deploying Verticles Programmatically
 
-* Handling [AsyncResult](http://vertx.io/docs/apidocs/io/vertx/core/AsyncResult.html)s via Callback
+* Handling http://vertx.io/docs/apidocs/io/vertx/core/AsyncResult.html[AsyncResult]s via Callback
 
-* Using [Message](http://vertx.io/docs/apidocs/io/vertx/core/eventbus/Message.html) objects - Message objects consist of JsonObject or String contents and can be replied to
+* Using http://vertx.io/docs/apidocs/io/vertx/core/eventbus/Message.html[Message] objects - Message objects consist of JsonObject or String contents and can be replied to
 
 ### **Exercise 7:** Deploy With Futures
 Often, the application will need to ensure that certain Verticles are 
@@ -349,47 +164,26 @@ already up and running before proceeding to do other actions. To allow for
 this, Vert.x provides a way of deploying Verticles with a callback once 
 the deployment is complete.
 
-[Example7.groovy](Example7/Example7.groovy)
-```groovy
-// .. SNIP ..
-class Exercise7 extends GroovyVerticle {
+.Exercise7/Exercise7.java
+[source,"java"]
+----
+include::Exercise7/Exercise7.java[]
+----
 
-    void start() {
-        vertx.deployVerticle('groovy:EventVerticle.groovy', this.&deployHandler)
-    }
-
-	// .. SNIP ..
-
-    void deployHandler(AsyncResult<String> res) {
-        if (res.succeeded()) {
-            LoggerFactory.getLogger(Exercise7).info('Successfully deployed EventVerticle')
-
-            // If the EventVerticle successfully deployed, configure and start the HTTP server
-            def router = Router.router(vertx)
-
-            router.get().handler(this.&rootHandler)
-
-            vertx.createHttpServer()            // Create a new HttpServer
-                .requestHandler(router.&accept) // Register a request handler
-                .listen(8080, '127.0.0.1')      // Listen on 127.0.0.1:8080
-        } else {
-            // Otherwise, exit the application
-            LoggerFactory.getLogger(Exercise7).error('Failed to deploy EventVerticle', res.cause())
-            vertx.close()
-        }
-    }
-}
-```
-
-[EventVerticle.groovy](Exercise7/EventVerticle.groovy)
+.Exercise7/EventVerticle.java
+[source,"java"]
+----
+include::Exercise7/EventVerticle.java[]
+----
 
 Next Steps:
+
 * Modify the example above to attempt to redeploy EventVerticle in case of a failure (Use maximum of 3 retries)
 * Modify the example above to deploy more than one Verticle and call the new Verticle `AnotherVerticle.groovy`
 
 ### Exercise 8: Asynchronous Coordination
 It is useful to coordinate several asynchronous operations in a single handler for certain situations. To 
-facilitate this, Vert.x provides a [CompositeFuture](http://vertx.io/docs/apidocs/io/vertx/core/CompositeFuture.html)
+facilitate this, Vert.x provides a http://vertx.io/docs/apidocs/io/vertx/core/CompositeFuture.html[CompositeFuture]
 
 [Exercise8.groovy](Exercise8/Exercise8.groovy)
 ```groovy
@@ -435,10 +229,10 @@ class Exercise8 extends GroovyVerticle {
 }
 ```
 
-Next Steps: (see [CompositeFuture](http://vertx.io/docs/apidocs/io/vertx/core/CompositeFuture.html) and 
-[Async Coordination](http://vertx.io/docs/vertx-core/groovy/#_sequential_composition))
+Next Steps: (see http://vertx.io/docs/apidocs/io/vertx/core/CompositeFuture.html[CompositeFuture] and 
+http://vertx.io/docs/vertx-core/groovy/#_sequential_composition[Async Coordination])
 * Modify the example above to use a List of futures instead of specifying each future as a parameter.
-* Remove the CompositeFuture and use composed [Future](http://vertx.io/docs/apidocs/io/vertx/core/Future.html)s to 
+* Remove the CompositeFuture and use composed http://vertx.io/docs/apidocs/io/vertx/core/Future.html[Future]s to 
   load one verticle after another
 
 ### Exercise 9: Using Shared Data
@@ -446,9 +240,9 @@ While you can coordinate between verticles very well using String and JsonObject
 sometimes better to share certain objects across multiple verticles. Vert.x makes this possible via 2 facilities.
 
 #### Exercise 9.1: Shared Local Map
-The [Vertx.sharedData()](http://vertx.io/docs/apidocs/io/vertx/core/Vertx.html#sharedData--) method allows us to get an
-instance of [LocalMap](http://vertx.io/docs/apidocs/io/vertx/core/shareddata/LocalMap.html) which can store most 
-Immutable data types as well as custom types which implement the [Shareable](http://vertx.io/docs/apidocs/io/vertx/core/shareddata/Shareable.html)
+The http://vertx.io/docs/apidocs/io/vertx/core/Vertx.html#sharedData--[Vertx.sharedData()] method allows us to get an
+instance of http://vertx.io/docs/apidocs/io/vertx/core/shareddata/LocalMap.html[LocalMap] which can store most 
+Immutable data types as well as custom types which implement the http://vertx.io/docs/apidocs/io/vertx/core/shareddata/Shareable.html[Shareable]
 interface. Storing data in a these LocalMap instances makes those objects available to other Verticles without having to
 use the EventBus to send those objects. **The Shared Local Map has no concurrency controls, so the last writer is always
 the winner. If assurance of ordered writes is required, then the user must implement their own concurrency controls or
@@ -503,8 +297,8 @@ class AnotherVerticle extends GroovyVerticle {
 
 #### Exercise 9.2: Clustered Async Map
 When running in a clustered configuration, sharing objects across Vert.x nodes requires a special feature known as
-[AsyncMap](http://vertx.io/docs/apidocs/io/vertx/core/shareddata/AsyncMap.html). The AsyncMap is handled by the Vert.x 
-[ClusterManager](http://vertx.io/docs/apidocs/io/vertx/core/spi/cluster/ClusterManager.html), which is responsible for
+http://vertx.io/docs/apidocs/io/vertx/core/shareddata/AsyncMap.html[AsyncMap]. The AsyncMap is handled by the Vert.x 
+http://vertx.io/docs/apidocs/io/vertx/core/spi/cluster/ClusterManager.html[ClusterManager], which is responsible for
 ensuring that access to the AsyncMap data is handled in a cluster/thread-safe way. In order to use the AsyncMap, Vert.x 
 **MUST** be started in a clustered mode using `vertx run -cluster <Verticle>`
 
@@ -627,7 +421,7 @@ class EchoServer extends AbstractVerticle {
 
 There are some new things to learn in this example. For one, there is the introduction of NetServer and it's associated 
 options; but that it mostly self-explanitory. The other thing to make note of is the use of the 
-[Buffer](http://vertx.io/docs/apidocs/io/vertx/core/buffer/Buffer.html) object. From the Vert.x API documentation:
+http://vertx.io/docs/apidocs/io/vertx/core/buffer/Buffer.html[Buffer] object. From the Vert.x API documentation:
 
 > Most data is shuffled around inside Vert.x using buffers.
 > A buffer is a sequence of zero or more bytes that can read from or written to and which expands automatically as necessary to accommodate any bytes written to it. You can perhaps think of a buffer as smart byte array.
@@ -742,18 +536,18 @@ will try to put a few different ones together. Here's the scenario:
   * Read a file (Your choice, but make it a simple short file) from the filesystem
   * Perform a DNS lookup on `www.google.com`
 * Once all of the parallel operations are complete, insert the file contents and the dns results into a `<pre>` block 
-  before the ending `</body>` tag in the html retrieved from Google (Note: [Groovy Regex Replace](http://naleid.com/blog/2008/05/19/dont-fear-the-regexp))
+  before the ending `</body>` tag in the html retrieved from Google (Note: http://naleid.com/blog/2008/05/19/dont-fear-the-regexp[Groovy Regex Replace])
 * Return the modified Google index page to the browser
 * If ANY one of the async operations fails, return a 500 HTTP response with the exception's `localizedMessage` value.
 
 There is only one component here which you are not already familiar with, and that is the
-[DNSClient](http://vertx.io/docs/vertx-core/groovy/#_dns_client). The DNS client relatively simple, and it will be left
+http://vertx.io/docs/vertx-core/groovy/#_dns_client[DNSClient]. The DNS client relatively simple, and it will be left
 up to you to read the documentation and use it.
 
 Next Steps:
 * Modify the solution for Exercise 13 so that you can 
-  [pass in](http://vertx.io/docs/vertx-core/groovy/#_the_vertx_command_line) a `config.json` file from which the 
-  application will [read](http://vertx.io/docs/vertx-core/groovy/#_passing_configuration_to_a_verticle) the settings 
+  http://vertx.io/docs/vertx-core/groovy/#_the_vertx_command_line[pass in] a `config.json` file from which the 
+  application will http://vertx.io/docs/vertx-core/groovy/#_passing_configuration_to_a_verticle[read] the settings 
   for:
   * HTTP client host
   * HTTP client URI
@@ -829,4 +623,4 @@ RoutingContext object, ALL of these handlers will be applied in order!
 Next Steps:
 * Do some research in the Vert.x documentation, and determine how to add a *catch-all* route which will handle any 
   previously unhandled requests by sending a custom JSON 404 response
-* Create a *catch-all* route which will instead serve up [static filesystem resources](http://vertx.io/docs/vertx-web/groovy/#_serving_static_resources)
+* Create a *catch-all* route which will instead serve up http://vertx.io/docs/vertx-web/groovy/#_serving_static_resources[static filesystem resources]

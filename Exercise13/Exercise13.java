@@ -81,7 +81,7 @@ public class Exercise13 extends AbstractVerticle {
             String html = "";
             String ipAddr = "";
             String fileContent = "";
-            LOG.info("CompositeFuture Size: ${cf.size()}");
+            LOG.info("CompositeFuture Size: "+cf.size());
             for (int x=0; x<cf.size(); x++) {
                 if (((String)cf.resultAt(x)).length()>2000) {
                     html = cf.resultAt(x);
@@ -93,7 +93,7 @@ public class Exercise13 extends AbstractVerticle {
             }
             LOG.info("All results stored");
 
-            String insert = "<pre>"+fileContent+" - "+ipAddr+"</pre></body>";
+            String insert = "<pre>"+fileContent+"\n\n"+ipAddr+"</pre></body>";
 
             LOG.info("Insert generated: "+insert);
 

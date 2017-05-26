@@ -12,7 +12,7 @@ public class Exercise3_1 extends AbstractVerticle {
         }
     }
 
-    public public void start() {
+    public void start() {
         vertx.createHttpServer()                     // Create a new HttpServer
              .requestHandler(new RequestHandler())
              .listen(8080, "127.0.0.1");  // Listen on port 8080 and interface `127.0.0.1`

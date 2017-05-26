@@ -6,12 +6,12 @@ public class Exercise2 extends AbstractVerticle {
 
     public void start() {
         // Create a JSON response
-        JsonObject response = new JsonObject([ok: true]).encode();
+        String response = new JsonObject().put("ok", true).encode();
 
         vertx.createHttpServer()         // Create a new HttpServer
              .requestHandler(req -> {    // Register a request handler for the HttpServer
-                 req.response().end(response)
+                 req.response().end(response);
              })
-             .listen(8080, '127.0.0.1'); // Listen on port 8080 and interface `127.0.0.1`
+             .listen(8080, "127.0.0.1"); // Listen on port 8080 and interface `127.0.0.1`
     }
 }

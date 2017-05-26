@@ -21,7 +21,7 @@ public class Solution2 extends AbstractVerticle {
         req.response().putHeader("Content-Type", "application/json").end(response);
     }
 
-    public public void start() {
+    public void start() {
         vertx.createHttpServer()                     // Create a new HttpServer
              .requestHandler(this::requestHandler)   // Register a request handler
              .listen(8080, "127.0.0.1");  // Listen on port 8080 and interface `127.0.0.1`

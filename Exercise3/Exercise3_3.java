@@ -1,9 +1,9 @@
 import io.vertx.core.AbstractVerticle;;
 import io.vertx.core.json.JsonObject;;
 
-public class HelloWorld extends AbstractVerticle {
+public class Exercise3_3 extends AbstractVerticle {
 
-    public public void start() {
+    public void start() {
         // Create a JSON response
         String response = new JsonObject().put("ok", true).encode();
 

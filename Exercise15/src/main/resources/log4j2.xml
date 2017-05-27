@@ -2,7 +2,8 @@
 <Configuration status="debug" name="XMLConfigTest">
     <Appenders>
         <Console name="STDOUT">
-            <BunyanLayout appName="edison" />
+            <BunyanLayout appName="testing-vertx-with-spock" />
+            <BunyanLayout appName="testing-vertx-with-spock" />
         </Console>
     </Appenders>
     <Loggers>

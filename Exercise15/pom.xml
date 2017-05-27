@@ -43,6 +43,7 @@
         <sonar.jacoco.reportPath>target/site/jacoco/jacoco.xml</sonar.jacoco.reportPath>
         <sonar.sources>src/main/groovy</sonar.sources>
         <sonar.tests>src/test/groovy</sonar.tests>
+        <main.verticle>com.redhat.labs.vertx.exercise15.Main</main.verticle>
     </properties>
 
     <dependencies>
@@ -156,7 +157,8 @@
                                 <transformer implementation="com.github.edwgiz.mavenShadePlugin.log4j2CacheTransformer.PluginsCacheFileTransformer" />
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <manifestEntries>
-                                        <Main-Class>com.sungardas.cc.edison.Main</Main-Class>
+                                        <Main-Class>io.vertx.core.Launcher</Main-Class>
+                                        <Main-Verticle>${main.verticle}</Main-Verticle>
                                     </manifestEntries>
                                 </transformer>
                             </transformers>

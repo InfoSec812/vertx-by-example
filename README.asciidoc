@@ -36,7 +36,7 @@ You’ll see that we chained the createHttpServer() method, which returns an Htt
 
 ### **Exercise 3:** Handlers
 
-A handler in Vert.x is a form of https://en.wikipedia.org/wiki/Callback_(computer_programming[Callback]). Handlers are passed as arguments to some Vert.x methods so that the callback can be executed once a particular asynchronous operation has been completed. Handlers for Vert.x can be written in Groovy in several ways:
+A handler in Vert.x is a form of https://en.wikipedia.org/wiki/Callback_(computer_programming[Callback]). Handlers are passed as arguments to some Vert.x methods so that the callback can be executed once a particular asynchronous operation has been completed. Handlers for Vert.x can be written in Java in several ways:
 
 #### **Exercise 3.1:** Handler classes
 
@@ -312,7 +312,7 @@ will try to put a few different ones together. Here's the scenario:
   * Read a file (Your choice, but make it a simple short file) from the filesystem
   * Perform a DNS lookup on `www.google.com`
 * Once all of the parallel operations are complete, insert the file contents and the dns results into a `<pre>` block
-  before the ending `</body>` tag in the html retrieved from Google (Note: http://naleid.com/blog/2008/05/19/dont-fear-the-regexp[Groovy Regex Replace])
+  before the ending `</body>` tag in the html retrieved from Google
 * Return the modified Google index page to the browser
 * If ANY one of the async operations fails, return a 500 HTTP response with the exception's `localizedMessage` value.
 
@@ -373,7 +373,7 @@ include::Exercise15/src/main/java/com/redhat/labs/vertx/exercise15/Main.java[]
 .Exercise15/src/test/java/com/redhat/labs/vertx/exercise15/MainSpec.groovy
 [source, "groovy"]
 ----
-include::Exercise15/src/test/java/com/redhat/labs/vertx/exercise15/MainSpec.groovy[]
+include::Exercise15/src/test/groovy/com/redhat/labs/vertx/exercise15/MainSpec.groovy[]
 ----
 <1> Spock uses https://github.com/cucumber/cucumber/wiki/Gherkin[Gherkin] style syntax in the form of *given*, *when*, *then*
 <2> When testing asynchronous code, Spock gives you an *AsyncConditions* class which can be used to coordinate. The number passed indicates the number of async evaluation blocks which will need to be processed

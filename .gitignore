@@ -1,10 +1,7 @@
 .idea
 .idea/**
 **/*.iml
-vertx
-vertx/**
 **/.vertx
-.vertx/
 lib/
 lib/**
 Exercise15/target/

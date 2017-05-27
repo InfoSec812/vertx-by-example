@@ -9,9 +9,7 @@ public class Exercise2 extends AbstractVerticle {
         String response = new JsonObject().put("ok", true).encode();
 
         vertx.createHttpServer()         // Create a new HttpServer
-             .requestHandler(req -> {    // Register a request handler for the HttpServer
-                 req.response().end(response);
-             })
-             .listen(8080, "127.0.0.1"); // Listen on port 8080 and interface `127.0.0.1`
+             .requestHandler(req -> req.response().end(response)) // Add request handler
+             .listen(8080, "127.0.0.1"); // Listen on http://127.0.0.1:8080
     }
 }

@@ -8,7 +8,7 @@
 2. Create a new file **Exercise1.java** with the following contents:
 
 .Exercise1/Exercise1.java
-[source,"java"]
+[source,java]
 ----
 include::Exercise1/Exercise1.java[]
 ----
@@ -32,7 +32,7 @@ Next Steps: (see http://vertx.io/docs/apidocs/io/vertx/core/http/HttpServerRespo
 Vert.x APIs are written to be https://en.wikipedia.org/wiki/Fluent_interface[fluent]. This means that you can chain method calls together so that they form a sort of domain specific language which CAN be easier to read. We will modify our first example to use the fluent API in Vert.x to perform the same operations.
 
 .Exercise2/Exercise2.java
-[source,"java",numbered]
+[source,"java"]
 ----
 include::Exercise2/Exercise2.java[]
 ----
@@ -51,7 +51,7 @@ A handler in Vert.x is a form of https://en.wikipedia.org/wiki/Callback_(compute
 The basic Handler in Vert.x is any class which implements the http://vertx.io/docs/apidocs/io/vertx/core/Handler.html[Handler] interface. For example:
 
 .Exercise3/Exercise3_1.java
-[source,"java"]
+[source,java]
 ----
 include::Exercise3/Exercise3_1.java[]
 ----
@@ -66,7 +66,7 @@ As you can see, we pass an instance of the RequestHandler class to the requestHa
 Another way to implement handlers removes some of the boiler-plate of having a separate hanlder class for each Callback we want to register. It’s called a https://docs.oracle.com/javase/tutorial/java/javaOO/methodreferences.html[Method Reference]. A method reference is a way of assigning a method to behave as a callback without having to implement a Handler interface on a new class.
 
 .Exercise3/Exercise3_2.java
-[source,"java"]
+[source,java]
 ----
 include::Exercise3/Exercise3_2.java[]
 ----
@@ -78,7 +78,7 @@ include::Exercise3/Exercise3_2.java[]
 Finally, in Java we can use https://docs.oracle.com/javase/tutorial/java/javaOO/lambdaexpressions.html[Lambdas]. Lambdas are a way of writing a bit of code which can be passed as a value . . . in-line…
 
 .Exercise3/Exercise3_3.java
-[source,"java"]
+[source,java]
 ----
 include::Exercise3/Exercise3_3.java[]
 ----
@@ -86,7 +86,7 @@ include::Exercise3/Exercise3_3.java[]
 An alternate way of declaring that closure would be to assign the closure to a variable and then pass the variable into the requestHandler() method as shown below:
 
 .Exercise3/Exercise3_3_1.java
-[source,"java"]
+[source,java]
 ----
 include::Exercise3/Exercise3_3_1.java[]
 ----
@@ -105,7 +105,7 @@ Next Steps: (see http://vertx.io/docs/apidocs/io/vertx/core/http/HttpServerReque
 So far, we have seen that we can add a requestHandler() to an HTTP server, but what if we want to have a number of different paths which do different things in our web application? This is where the Vert.x Web module comes in. It gives us a new features like http://vertx.io/docs/apidocs/io/vertx/ext/web/Router.html[Router] and http://vertx.io/docs/apidocs/io/vertx/ext/web/RoutingContext.html[RoutingContext].
 
 .Exercise4/Exercise4.java
-[source,"java"]
+[source,java]
 ----
 include::Exercise4/Exercise4.java[]
 ----
@@ -123,7 +123,7 @@ include::Exercise4/Exercise4.java[]
 In the previous example, we saw that we could specify different paths with different handlers, but what about if we want to capture information FROM the path in a programmatic manner?
 
 .Exercise5/Exercise5.java
-[source,"java"]
+[source,java]
 ----
 include::Exercise5/Exercise5.java[]
 ----
@@ -144,13 +144,13 @@ Next Steps: (see http://vertx.io/docs/apidocs/io/vertx/ext/web/Router.html[Route
 So far, our exercised have done all of their work in a single Verticle (HelloWorld). This is fine for simple applications, but it does not scale well for larger and more complex applications. Each Verticle is single-threaded; so in order to utilize our CPU cores effectively, we need to distribute workloads across multiple Verticles.
 
 .Exercise6/EventVerticle.java
-[source,"java"]
+[source,java]
 ----
 include::Exercise6/EventVerticle.java[]
 ----
 
 .Exercise6/Exercise6.java
-[source,"java"]
+[source,java]
 ----
 include::Exercise6/Exercise6.java[]
 ----
@@ -179,13 +179,13 @@ this, Vert.x provides a way of deploying Verticles with a callback once
 the deployment is complete.
 
 .Exercise7/Exercise7.java
-[source,"java"]
+[source,java]
 ----
 include::Exercise7/Exercise7.java[]
 ----
 
 .Exercise7/EventVerticle.java
-[source,"java"]
+[source,java]
 ----
 include::Exercise7/EventVerticle.java[]
 ----
@@ -202,7 +202,7 @@ It is useful to coordinate several asynchronous operations in a single handler f
 facilitate this, Vert.x provides a http://vertx.io/docs/apidocs/io/vertx/core/CompositeFuture.html[CompositeFuture]
 
 .Exercise8/Exercise8.java
-[source,"java"]
+[source,java]
 ----
 include::Exercise8/Exercise8.java[]
 ----
@@ -229,13 +229,13 @@ the winner. If assurance of ordered writes is required, then the user must imple
 only use data structures which ensure thread safety.**
 
 .Exercise9/Exercise9_1.java
-[source,"java"]
+[source,java]
 ----
 include::Exercise9/Exercise9_1.java[]
 ----
 
 .Exercise9/AnotherVerticle.java
-[source,"java"]
+[source,java]
 ----
 include::Exercise9/AnotherVerticle.java[]
 ----
@@ -250,13 +250,13 @@ ensuring that access to the AsyncMap data is handled in a cluster/thread-safe wa
 **MUST** be started in a clustered mode using `vertx run -cluster <Verticle>`
 
 .Exercise9/Exercise9_2.java
-[source,"java"]
+[source,java]
 ----
 include::Exercise9/Exercise9_2.java[]
 ----
 
 .Exercise9/ClusteredVerticle.java
-[source,"java"]
+[source,java]
 ----
 include::Exercise9/ClusteredVerticle.java[]
 ----
@@ -273,7 +273,7 @@ As a quick introduction to the network server capabilities of Vert.x, Let's impl
 is a network socket server which accepts incoming data and sends the same data back as a response.
 
 .Exercise10/Exercise10.java
-[source,"java"]
+[source,java]
 ----
 include::Exercise10/Exercise10.java[]
 ----
@@ -303,7 +303,7 @@ and send back `Hello <text>`.
 Vert.x also has the ability to create UDP servers. Let's see what a UDP echo server would look like in Vert.x:
 
 .Exercise11/Exercise11.java
-[source,"java"]
+[source,java]
 ----
 include::Exercise11/Exercise11.java[]
 ----
@@ -321,7 +321,7 @@ HTTP is a mainstay of software these days, so being able to make and handle HTTP
 make HTTP requests in an asynchronous manner:
 
 .Exercise12/Exercise12.java
-[source,"java"]
+[source,java]
 ----
 include::Exercise12/Exercise12.java[]
 ----
@@ -376,7 +376,7 @@ under that path will all do some of the same tasks, you can extract those operat
 calls `RoutingContext.next()` and the request will be processed by other routes which might match. Here's an example:
 
 .Exercise14/Exercise14.java
-[source,"java"]
+[source,java]
 ----
 include::Exercise14/Exercise14.java[]
 ----
@@ -402,13 +402,13 @@ already configured with the required dependencies for running tests using Spock 
 libraries to make it all work.
 
 .Exercise15/src/main/java/com/redhat/labs/vertx/exercise15/Main.java
-[source, "java"]
+[source,java]
 ----
 include::Exercise15/src/main/java/com/redhat/labs/vertx/exercise15/Main.java[]
 ----
 
 .Exercise15/src/test/java/com/redhat/labs/vertx/exercise15/MainSpec.groovy
-[source, "groovy"]
+[source,groovy]
 ----
 include::Exercise15/src/test/groovy/com/redhat/labs/vertx/exercise15/MainSpec.groovy[]
 ----

@@ -16,7 +16,7 @@ public class Exercise9_2 extends AbstractVerticle {
                 // Write to the map and await success
                 res.result().put("deployments", Arrays.asList(context.deploymentID()), res1 -> {
                     // Deploy AnotherVerticle 10 times
-                        IntStream.rangeClosed(1, 10).forEach(i -> {
+                    IntStream.rangeClosed(1, 10).forEach(i -> {
                         vertx.deployVerticle("java:ClusteredVerticle.java");
                     });
                 });

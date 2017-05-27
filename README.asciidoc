@@ -1,3 +1,7 @@
+= Vert.x By Example
+:source-highlighter: pygments
+:autofit-option:
+
 ### **Exercise 1:** Simple Vert.x Hello World Web Server
 
 1. Download the FULL Vert.x distribution from http://vertx.io/[http://vertx.io/] and ensure that the **vertx** command is in your path (vertx/bin/vertx)
@@ -21,18 +25,22 @@ Next Steps: (see http://vertx.io/docs/apidocs/io/vertx/core/http/HttpServerRespo
 
 * Modify the example above to add an HTTP reason phrase of ‘IDUNNO’ to the response
 
+<<<
+
 ### **Exercise 2**: Are you fluent?!?!
 
 Vert.x APIs are written to be https://en.wikipedia.org/wiki/Fluent_interface[fluent]. This means that you can chain method calls together so that they form a sort of domain specific language which CAN be easier to read. We will modify our first example to use the fluent API in Vert.x to perform the same operations.
 
 .Exercise2/Exercise2.java
-[source,"java"]
+[source,"java",numbered]
 ----
 include::Exercise2/Exercise2.java[]
 ----
 
 
 You’ll see that we chained the createHttpServer() method, which returns an HttpServer object, to the requestHandler() method. We then chained the requestHandler() method to the listen() method. Each of these chained methods returns the original HttpServer object so that we can make subsequent calls in a fluent manner.
+
+<<<
 
 ### **Exercise 3:** Handlers
 
@@ -51,6 +59,8 @@ include::Exercise3/Exercise3_1.java[]
 
 As you can see, we pass an instance of the RequestHandler class to the requestHandler() method on the HttpServer object and that instance will handle the HTTP requests.
 
+<<<
+
 #### **Exercise 3.2:** Method References
 
 Another way to implement handlers removes some of the boiler-plate of having a separate hanlder class for each Callback we want to register. It’s called a https://docs.oracle.com/javase/tutorial/java/javaOO/methodreferences.html[Method Reference]. A method reference is a way of assigning a method to behave as a callback without having to implement a Handler interface on a new class.
@@ -61,6 +71,7 @@ Another way to implement handlers removes some of the boiler-plate of having a s
 include::Exercise3/Exercise3_2.java[]
 ----
 
+<<<
 
 #### **Exercise 3.3:** Lambdas
 
@@ -87,6 +98,8 @@ Next Steps: (see http://vertx.io/docs/apidocs/io/vertx/core/http/HttpServerReque
 
 * Modify the example above to include the request headers as a nested JSON object within the response body
 
+<<<
+
 ### **Exercise 4:** Using Routers
 
 So far, we have seen that we can add a requestHandler() to an HTTP server, but what if we want to have a number of different paths which do different things in our web application? This is where the Vert.x Web module comes in. It gives us a new features like http://vertx.io/docs/apidocs/io/vertx/ext/web/Router.html[Router] and http://vertx.io/docs/apidocs/io/vertx/ext/web/RoutingContext.html[RoutingContext].
@@ -102,6 +115,8 @@ include::Exercise4/Exercise4.java[]
 2. Each route has a separate handler set via a method reference
 
 3. Finally, we pass the Router’s accept method via a method reference as a handler for the HttpServer’s requestHandler() method.
+
+<<<
 
 ### **Exercise 5:** Routes with Path Parameters
 
@@ -121,6 +136,8 @@ Next Steps: (see http://vertx.io/docs/apidocs/io/vertx/ext/web/Router.html[Route
 * Modify the example above to use a route with regular expressions
 
 * Modify the example to add a new HTTP POST endpoint which consumes JSON and produces the POSTed JSON
+
+<<<
 
 ### **Exercise 6:** Programmatically Deploy Verticles
 
@@ -153,6 +170,8 @@ thread-safe manner
 
 * Using http://vertx.io/docs/apidocs/io/vertx/core/eventbus/Message.html[Message] objects - Message objects consist of JsonObject or String contents and can be replied to
 
+<<<
+
 ### **Exercise 7:** Deploy With Futures
 Often, the application will need to ensure that certain Verticles are
 already up and running before proceeding to do other actions. To allow for
@@ -176,6 +195,8 @@ Next Steps:
 * Modify the example above to attempt to redeploy EventVerticle in case of a failure (Use maximum of 3 retries)
 * Modify the example above to deploy more than one Verticle and call the new Verticle `AnotherVerticle.java`
 
+<<<
+
 ### Exercise 8: Asynchronous Coordination
 It is useful to coordinate several asynchronous operations in a single handler for certain situations. To
 facilitate this, Vert.x provides a http://vertx.io/docs/apidocs/io/vertx/core/CompositeFuture.html[CompositeFuture]
@@ -191,6 +212,8 @@ http://vertx.io/docs/vertx-core/java/#_sequential_composition[Async Coordination
 * Modify the example above to use a List of futures instead of specifying each future as a parameter.
 * Remove the CompositeFuture and use composed http://vertx.io/docs/apidocs/io/vertx/core/Future.html[Future]s to
   load one verticle after another
+
+<<<
 
 ### Exercise 9: Using Shared Data
 While you can coordinate between verticles very well using String and JsonObject instances over the EventBus, it is
@@ -217,6 +240,8 @@ include::Exercise9/Exercise9_1.java[]
 include::Exercise9/AnotherVerticle.java[]
 ----
 
+<<<
+
 #### Exercise 9.2: Clustered Async Map
 When running in a clustered configuration, sharing objects across Vert.x nodes requires a special feature known as
 http://vertx.io/docs/apidocs/io/vertx/core/shareddata/AsyncMap.html[AsyncMap]. The AsyncMap is handled by the Vert.x
@@ -240,6 +265,8 @@ This cluster-wide data coordination is complex, so it is always advisable to sen
 possible. The ClusterManager and the AsyncMap implementations ensure that access to and writing of clustered resources
 are synchronized properly across the entire cluster and thust prevents race conditions. The negative impact being that
 access to read/write clustered data is much slower.
+
+<<<
 
 ### Exercise 10 - A TCP Echo Server
 As a quick introduction to the network server capabilities of Vert.x, Let's implement a TCP Echo Server. An echo server
@@ -269,6 +296,8 @@ Next Steps:
 and send back `Hello <text>`.
 
 
+<<<
+
 ### Exercise 11
 
 Vert.x also has the ability to create UDP servers. Let's see what a UDP echo server would look like in Vert.x:
@@ -283,6 +312,8 @@ Next Steps:
 
 * Modify the EchoServer above to take in some text (Latin characters, numbers, spaces, newlines ONLY), ignore non-text,
 and send back `Hello <text>`.
+
+<<<
 
 ### Exercise 12
 
@@ -299,6 +330,8 @@ Next Steps
 
 * Make an HTTP GET request which uses HTTP Basic Authentication
 * Make an HTTP POST request which sends a JSON body
+
+<<<
 
 ### Exercise 13
 
@@ -333,6 +366,8 @@ Next Steps:
 ** DNS hostname to be resolved
 ** Filename to be read
 
+<<<
+
 ### Exercise 14
 
 Let's jump back into `vertx-web` again a little deeper... One interesting aspect of the `Router` and `RoutingContext` is
@@ -354,6 +389,8 @@ Next Steps:
 * Do some research in the Vert.x documentation, and determine how to add a *catch-all* route which will handle any
   previously unhandled requests by sending a custom JSON 404 response
 * Create a *catch-all* route which will instead serve up http://vertx.io/docs/vertx-web/java/#_serving_static_resources[static filesystem resources]
+
+<<<
 
 ### Exercise 15
 

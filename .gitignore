@@ -6,4 +6,7 @@ lib/
 lib/**
 Exercise15/target/
 Exercise15/.vertx/
-Exercise15Exercise15.iml
+Exercise15/testing-vertx-with-spock.iml
+Exercise16/target/
+Exercise16/.vertx/
+Exercise16/hawkular-metrics.iml

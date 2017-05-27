@@ -1,7 +1,7 @@
 ### **Exercise 1:** Simple Vert.x Hello World Web Server
 
 1. Download the FULL Vert.x distribution from http://vertx.io/[http://vertx.io/] and ensure that the **vertx** command is in your path (vertx/bin/vertx)
-2. Create a new file **Exercise1.groovy** with the following contents:
+2. Create a new file **Exercise1.java** with the following contents:
 
 .Exercise1/Exercise1.java
 [source,"java"]
@@ -9,7 +9,7 @@
 include::Exercise1/Exercise1.java[]
 ----
 [start=3]
-3. Run the verticle with the command `**vertx run Exercise1.groovy**`
+3. Run the verticle with the command `**vertx run Exercise1.java**`
     1. You should see a message like: `Succeeded in deploying verticle`
 4. Open a browser and point it at: http://localhost:8080/[http://localhost:8080/]
 
@@ -53,7 +53,7 @@ As you can see, we pass an instance of the RequestHandler class to the requestHa
 
 #### **Exercise 3.2:** Method References
 
-Another way to implement handlers removes some of the boiler-plate of having a separate hanlder class for each Callback we want to register. It’s called a http://docs.groovy-lang.org/latest/html/documentation/#method-pointer-operator[Method Reference]. A method reference is a way of assigning a method to behave as a callback without having to implement a Handler interface on a new class.
+Another way to implement handlers removes some of the boiler-plate of having a separate hanlder class for each Callback we want to register. It’s called a https://docs.oracle.com/javase/tutorial/java/javaOO/methodreferences.html[Method Reference]. A method reference is a way of assigning a method to behave as a callback without having to implement a Handler interface on a new class.
 
 .Exercise3/Exercise3_2.java
 [source,"java"]
@@ -114,7 +114,7 @@ include::Exercise5/Exercise5.java[]
 ----
 
 
-Next Steps: (see http://vertx.io/docs/apidocs/io/vertx/ext/web/Router.html[Router], http://vertx.io/docs/vertx-web/groovy/#_routing_with_regular_expressions[Routing With Regular Expressions], http://vertx.io/docs/vertx-web/groovy/#_routing_based_on_mime_type_of_request[Routing Based On MIME Types], http://vertx.io/docs/vertx-web/groovy/#_request_body_handling[Request Body Handling])
+Next Steps: (see http://vertx.io/docs/apidocs/io/vertx/ext/web/Router.html[Router], http://vertx.io/docs/vertx-web/java/#_routing_with_regular_expressions[Routing With Regular Expressions], http://vertx.io/docs/vertx-web/java/#_routing_based_on_mime_type_of_request[Routing Based On MIME Types], http://vertx.io/docs/vertx-web/java/#_request_body_handling[Request Body Handling])
 
 * Modify the example above to have a new route which had multiple path parameters
 
@@ -144,7 +144,7 @@ working directory or a child directory referenced by it's relative path)
 
 Several new concepts have been introduced in this example:
 
-* The http://vertx.io/docs/vertx-core/groovy/#event_bus[EventBus] - Used to communicate between Verticles in a
+* The http://vertx.io/docs/vertx-core/java/#event_bus[EventBus] - Used to communicate between Verticles in a
 thread-safe manner
 
 * Deploying Verticles Programmatically
@@ -174,7 +174,7 @@ include::Exercise7/EventVerticle.java[]
 Next Steps:
 
 * Modify the example above to attempt to redeploy EventVerticle in case of a failure (Use maximum of 3 retries)
-* Modify the example above to deploy more than one Verticle and call the new Verticle `AnotherVerticle.groovy`
+* Modify the example above to deploy more than one Verticle and call the new Verticle `AnotherVerticle.java`
 
 ### Exercise 8: Asynchronous Coordination
 It is useful to coordinate several asynchronous operations in a single handler for certain situations. To
@@ -187,7 +187,7 @@ include::Exercise8/Exercise8.java[]
 ----
 
 Next Steps: (see http://vertx.io/docs/apidocs/io/vertx/core/CompositeFuture.html[CompositeFuture] and
-http://vertx.io/docs/vertx-core/groovy/#_sequential_composition[Async Coordination])
+http://vertx.io/docs/vertx-core/java/#_sequential_composition[Async Coordination])
 * Modify the example above to use a List of futures instead of specifying each future as a parameter.
 * Remove the CompositeFuture and use composed http://vertx.io/docs/apidocs/io/vertx/core/Future.html[Future]s to
   load one verticle after another
@@ -317,14 +317,14 @@ will try to put a few different ones together. Here's the scenario:
 * If ANY one of the async operations fails, return a 500 HTTP response with the exception's `localizedMessage` value.
 
 There is only one component here which you are not already familiar with, and that is the
-http://vertx.io/docs/vertx-core/groovy/#_dns_client[DNSClient]. The DNS client relatively simple, and it will be left
+http://vertx.io/docs/vertx-core/java/#_dns_client[DNSClient]. The DNS client relatively simple, and it will be left
 up to you to read the documentation and use it.
 
 Next Steps:
 
 * Modify the solution for Exercise 13 so that you can
-  http://vertx.io/docs/vertx-core/groovy/#_the_vertx_command_line[pass in] a `config.json` file from which the
-  application will http://vertx.io/docs/vertx-core/groovy/#_passing_configuration_to_a_verticle[read] the settings
+  http://vertx.io/docs/vertx-core/java/#_the_vertx_command_line[pass in] a `config.json` file from which the
+  application will http://vertx.io/docs/vertx-core/java/#_passing_configuration_to_a_verticle[read] the settings
   for:
 ** HTTP client host
 ** HTTP client URI
@@ -353,13 +353,16 @@ RoutingContext object, ALL of these handlers will be applied in order!
 Next Steps:
 * Do some research in the Vert.x documentation, and determine how to add a *catch-all* route which will handle any
   previously unhandled requests by sending a custom JSON 404 response
-* Create a *catch-all* route which will instead serve up http://vertx.io/docs/vertx-web/groovy/#_serving_static_resources[static filesystem resources]
+* Create a *catch-all* route which will instead serve up http://vertx.io/docs/vertx-web/java/#_serving_static_resources[static filesystem resources]
 
 ### Exercise 15
 
 Now that we have a basic understanding of event based programming in Vert.x, let's learn how we can test our code when operating in an asynchronous world.
 In this example we will have a single Verticle which sets itself up to listen on the event bus. And using http://www.spockframework.org[Spock Framework] we
-will add a behavior test in order to make sure that our Verticle functions as expected.
+will add a behavior test in order to make sure that our Verticle functions as expected. In order to facilitate running
+the tests, we have a Maven project POM to describe the build environment and handle dependencies. The Maven POM is
+already configured with the required dependencies for running tests using Spock Framework and the required Groovy
+libraries to make it all work.
 
 .Exercise15/src/main/java/com/redhat/labs/vertx/exercise15/Main.java
 [source, "java"]
@@ -367,10 +370,10 @@ will add a behavior test in order to make sure that our Verticle functions as ex
 include::Exercise15/src/main/java/com/redhat/labs/vertx/exercise15/Main.java[]
 ----
 
-.Exercise15/src/test/groovy/com/redhat/labs/vertx/exercise15/MainSpec.groovy
+.Exercise15/src/test/java/com/redhat/labs/vertx/exercise15/MainSpec.groovy
 [source, "groovy"]
 ----
-include::Exercise15/src/test/groovy/com/redhat/labs/vertx/exercise15/MainSpec.groovy[]
+include::Exercise15/src/test/java/com/redhat/labs/vertx/exercise15/MainSpec.groovy[]
 ----
 <1> Spock uses https://github.com/cucumber/cucumber/wiki/Gherkin[Gherkin] style syntax in the form of *given*, *when*, *then*
 <2> When testing asynchronous code, Spock gives you an *AsyncConditions* class which can be used to coordinate. The number passed indicates the number of async evaluation blocks which will need to be processed
